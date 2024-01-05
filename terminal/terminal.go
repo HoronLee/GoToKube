@@ -1,10 +1,10 @@
 package terminal
 
 import (
+	"VDController/docker"
 	"bufio"
 	"fmt"
 	"os"
-	"os/exec"
 	"sync"
 )
 
@@ -30,12 +30,11 @@ func Terminal(wg *sync.WaitGroup) {
 					{
 						name: "查看正在运行的容器",
 						action: func() {
-							cmd := exec.Command("bash", "-c", "docker ps")
-							output, err := cmd.CombinedOutput()
+							returnValue, err := docker.Dockerls()
 							if err != nil {
-								fmt.Println("命令执行失败:", err)
+    							fmt.Println(err)
 							}
-							fmt.Println(string(output))
+							fmt.Println(returnValue)
 						},
 					},
 					{

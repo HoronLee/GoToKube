@@ -1,4 +1,4 @@
-package terminal
+package logger
 
 import (
 	"fmt"
@@ -49,8 +49,26 @@ func (l *Logger) Log(level LogLevel, msg string) {
 	}
 }
 
+func (l *Logger) countLogs() {
+	files, err := ioutil.ReadDir("./logs")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	count := 0
+	for _, file := range files {
+		if strings.HasPrefix(file.Name(), "vdc_") {
+			count++
+		}
+	}
+
+	if count > 5 {
+		l.cleanupLogs()
+	}
+}
+
 // 清理三天前的日志
-func (l *Logger) CleanupLogs() {
+func (l *Logger) cleanupLogs() {
 	files, err := ioutil.ReadDir("./logs")
 	if err != nil {
 		log.Fatal(err)
