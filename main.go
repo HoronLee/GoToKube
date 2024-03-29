@@ -1,8 +1,8 @@
 package main
 
 import (
-	"VDController/logger"
 	"VDController/docker"
+	"VDController/logger"
 	"VDController/terminal"
 	"sync"
 )

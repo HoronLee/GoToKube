@@ -45,13 +45,19 @@ func dockerChecks() (ifok bool, state string) {
 		} else {
 			dstate := "Docker 版本:" + strings.TrimSpace(string(dockerV))
 			// 检查 Docker Compose 版本
-			dockerCompV, err := exec.Command("docker-compose", "version", "--format", "{{.Server.Version}}").Output()
+			dockerCompV, err := exec.Command("docker-compose", "version").Output()
 			if err != nil {
 				ifok, state = false, "无法获取 Docker Compose 版本，将无法使用Docker Compose功能，\n"+"请参考 https://docs.docker.com/compose/install/ 安装 Docker Compose。"
 				tLogger.Log(logger.WARNING, state)
 				return ifok, state
 			} else {
-				ifok, state = true, dstate+"\n"+"Docker Compose 版本:"+strings.TrimSpace(string(dockerCompV))[23:]
+				versionIndex := strings.Index(string(dockerCompV), "version ")
+				if versionIndex != -1 {
+					versionStr := strings.TrimSpace(string(dockerCompV)[versionIndex+len("version "):])
+					ifok, state = true, dstate+"\n"+"Docker Compose 版本:"+versionStr
+				} else {
+					ifok, state = true, dstate+"\n"+"无法获取 Docker Compose 版本"
+				}
 			}
 			tLogger.Log(logger.INFO, state)
 			return ifok, state
