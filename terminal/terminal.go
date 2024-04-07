@@ -30,11 +30,13 @@ func Terminal(wg *sync.WaitGroup) {
 					{
 						name: "查看正在运行的容器",
 						action: func() {
-							returnValue, err := docker.Dockerls()
+							returnValue, err := docker.Dockerclient.Dockerls()
 							if err != nil {
-    							fmt.Println(err)
+								fmt.Println(err)
 							}
-							fmt.Println(returnValue)
+							for _, ctr := range returnValue {
+								fmt.Printf("%s %s %s\n", ctr.ID[:3], ctr.Image, ctr.Status)
+							}
 						},
 					},
 					{

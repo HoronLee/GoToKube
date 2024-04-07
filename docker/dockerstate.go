@@ -20,7 +20,7 @@ func CheckState() {
 	} else if strings.Contains(state, "无法获取 Docker") {
 		fmt.Println(state)
 		os.Exit(1)
-	} else if strings.Contains(state, "无法获取 Docker C") {
+	} else if strings.Contains(state, "无法获取 Docker Compose") {
 		fmt.Println(state)
 	} else {
 		fmt.Println(state)
@@ -54,7 +54,7 @@ func dockerChecks() (ifok bool, state string) {
 				versionIndex := strings.Index(string(dockerCompV), "version ")
 				if versionIndex != -1 {
 					versionStr := strings.TrimSpace(string(dockerCompV)[versionIndex+len("version "):])
-					ifok, state = true, dstate+"\n"+"Docker Compose 版本:"+versionStr
+					ifok, state = true, dstate+", "+"Docker Compose 版本:"+versionStr
 				} else {
 					ifok, state = true, dstate+"\n"+"无法获取 Docker Compose 版本"
 				}
