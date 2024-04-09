@@ -14,10 +14,10 @@ func main() {
 	// 检查Docker状态
 	docker.CheckState()
 	// 控制台协程
-	var mianWg sync.WaitGroup
-	mianWg.Add(1)
-	go terminal.Terminal(&mianWg)
+	var mainWg sync.WaitGroup
+	mainWg.Add(1)
+	go terminal.Terminal(&mainWg)
 	// Web 端
 	web.StartWeb()
-	mianWg.Wait()
+	mainWg.Wait()
 }
