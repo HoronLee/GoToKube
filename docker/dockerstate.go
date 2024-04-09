@@ -28,6 +28,14 @@ func CheckState() {
 	}
 }
 
+// 环境信息全局变量以及结构
+var eInfo = envInfo{}
+
+type envInfo struct {
+	DockerVersion   string
+	DcomposeVersion string
+}
+
 func dockerChecks() (ifok bool, state string) {
 	// 检查 Docker 是否在运行
 	_, err := exec.Command("docker", "info").Output()
@@ -43,6 +51,7 @@ func dockerChecks() (ifok bool, state string) {
 			tLogger.Log(logger.ERROR, state)
 			return ifok, state
 		} else {
+			eInfo.DockerVersion = string(dockerV)
 			dstate := "Docker 版本:" + strings.TrimSpace(string(dockerV))
 			// 检查 Docker Compose 版本
 			dockerCompV, err := exec.Command("docker-compose", "version").Output()
@@ -55,6 +64,7 @@ func dockerChecks() (ifok bool, state string) {
 				if versionIndex != -1 {
 					versionStr := strings.TrimSpace(string(dockerCompV)[versionIndex+len("version "):])
 					ifok, state = true, dstate+", "+"Docker Compose 版本:"+versionStr
+					eInfo.DcomposeVersion = string(versionStr)
 				} else {
 					ifok, state = true, dstate+"\n"+"无法获取 Docker Compose 版本"
 				}
@@ -63,4 +73,8 @@ func dockerChecks() (ifok bool, state string) {
 			return ifok, state
 		}
 	}
+}
+
+func GetEnvInfo() envInfo {
+	return eInfo
 }

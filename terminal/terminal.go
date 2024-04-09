@@ -37,6 +37,7 @@ func Terminal(wg *sync.WaitGroup) {
 							for _, ctr := range returnValue {
 								fmt.Printf("%s %s %s\n", ctr.ID[:3], ctr.Image, ctr.Status)
 							}
+							fmt.Println("============")
 						},
 					},
 					{

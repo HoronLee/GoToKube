@@ -4,6 +4,7 @@ import (
 	"VDController/docker"
 	"VDController/logger"
 	"VDController/terminal"
+	"VDController/web"
 	"sync"
 )
 
@@ -13,8 +14,10 @@ func main() {
 	// 检查Docker状态
 	docker.CheckState()
 	// 控制台协程
-	var terminalWg sync.WaitGroup
-	terminalWg.Add(1)
-	go terminal.Terminal(&terminalWg)
-	terminalWg.Wait()
+	var mianWg sync.WaitGroup
+	mianWg.Add(1)
+	go terminal.Terminal(&mianWg)
+	// Web 端
+	web.StartWeb()
+	mianWg.Wait()
 }

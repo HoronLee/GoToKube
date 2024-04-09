@@ -47,8 +47,9 @@ func init() {
 func (dc *dockerClient) Dockerls() ([]types.Container, error) {
 	containers, err := dc.Client.ContainerList(context.Background(), container.ListOptions{})
 	if err != nil {
-		panic(err)
+		dLogger.Log(logger.ERROR, "列出容器失败")
+	} else {
+		dLogger.Log(logger.INFO, "列出当前容器")
 	}
-	dLogger.Log(logger.INFO, "列出当前容器")
 	return containers, err
 }
