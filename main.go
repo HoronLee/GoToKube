@@ -4,7 +4,6 @@ import (
 	"VDController/docker"
 	"VDController/logger"
 	"VDController/terminal"
-	"VDController/web"
 	"sync"
 )
 
@@ -17,7 +16,5 @@ func main() {
 	var mainWg sync.WaitGroup
 	mainWg.Add(1)
 	go terminal.Terminal(&mainWg)
-	// Web 端
-	web.StartWeb()
 	mainWg.Wait()
 }

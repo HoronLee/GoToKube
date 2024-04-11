@@ -24,6 +24,13 @@ type Logger struct {
 
 // 创建日志记录器
 func NewLogger(level LogLevel) *Logger {
+	// 检查并创建 logs 文件夹
+	if _, err := os.Stat("logs"); os.IsNotExist(err) {
+		err := os.Mkdir("logs", 0755)
+		if err != nil {
+			log.Fatalf("Error creating logs directory: %v", err)
+		}
+	}
 	return &Logger{level: level}
 }
 

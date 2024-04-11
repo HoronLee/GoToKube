@@ -2,6 +2,7 @@ package terminal
 
 import (
 	"VDController/docker"
+	"VDController/web"
 	"bufio"
 	"fmt"
 	"os"
@@ -38,6 +39,28 @@ func Terminal(wg *sync.WaitGroup) {
 								fmt.Printf("%s %s %s\n", ctr.ID[:3], ctr.Image, ctr.Status)
 							}
 							fmt.Println("============")
+						},
+					},
+					{
+						name: "退出控制台",
+						action: func() {
+							exitFlag = true
+							wg.Done()
+						},
+					},
+				},
+			},
+			{
+				name: "Web选项",
+				subMenu: []*Menu{
+					{
+						name:   "返回上级菜单",
+						action: func() {},
+					},
+					{
+						name: "启动网页端",
+						action: func() {
+							web.StartWeb()
 						},
 					},
 					{
