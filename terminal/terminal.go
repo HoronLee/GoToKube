@@ -18,16 +18,24 @@ type Menu struct {
 var exitFlag bool
 
 func Terminal(wg *sync.WaitGroup) {
+	parentMenu := &Menu{
+		name:   "返回上级菜单",
+		action: func() {},
+	}
+	exitMenu := &Menu{
+		name: "退出控制台",
+		action: func() {
+			exitFlag = true
+			wg.Done()
+		},
+	}
 	Menu := &Menu{
 		name: "主菜单" + "\n======",
 		subMenu: []*Menu{
 			{
-				name: "Docker选项",
+				name: "🐳Docker选项",
 				subMenu: []*Menu{
-					{
-						name:   "返回上级菜单",
-						action: func() {},
-					},
+					parentMenu,
 					{
 						name: "查看正在运行的容器",
 						action: func() {
@@ -41,44 +49,24 @@ func Terminal(wg *sync.WaitGroup) {
 							fmt.Println("============")
 						},
 					},
-					{
-						name: "退出控制台",
-						action: func() {
-							exitFlag = true
-							wg.Done()
-						},
-					},
+					exitMenu,
 				},
 			},
 			{
-				name: "Web选项",
+				name: "🌐Web选项",
 				subMenu: []*Menu{
-					{
-						name:   "返回上级菜单",
-						action: func() {},
-					},
+					parentMenu,
 					{
 						name: "启动网页端",
 						action: func() {
-							web.StartWeb()
+							go web.StartWeb()
+							fmt.Println("🌐启动网页端成功\n" + "============")
 						},
 					},
-					{
-						name: "退出控制台",
-						action: func() {
-							exitFlag = true
-							wg.Done()
-						},
-					},
+					exitMenu,
 				},
 			},
-			{
-				name: "退出控制台",
-				action: func() {
-					exitFlag = true
-					wg.Done()
-				},
-			},
+			exitMenu,
 		},
 	}
 	showMenu(Menu)
@@ -93,8 +81,8 @@ func showMenu(menu *Menu) {
 		// 显示菜单名
 		fmt.Println(menu.name)
 		// 显示菜单项
-		for i, subMenu := range menu.subMenu {
-			fmt.Printf("%d. %s\n", i+1, subMenu.name)
+		for num, subMenu := range menu.subMenu {
+			fmt.Printf("%d. %s\n", num+1, subMenu.name)
 		}
 		// 读取用户输入
 		reader := bufio.NewReader(os.Stdin)
