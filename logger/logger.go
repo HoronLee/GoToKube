@@ -1,12 +1,10 @@
 package logger
 
 import (
-	"fmt"
-	"io/ioutil"
-	"log"
 	"os"
-	"strings"
 	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
 type LogLevel int
@@ -19,72 +17,56 @@ const (
 
 // 日志记录器
 type Logger struct {
-	level LogLevel
+	logger *logrus.Logger
 }
 
 // 创建日志记录器
 func NewLogger(level LogLevel) *Logger {
+	// 初始化logrus logger
+	logger := logrus.New()
+
+	// 设置日志级别
+	switch level {
+	case INFO:
+		logger.SetLevel(logrus.InfoLevel)
+	case WARNING:
+		logger.SetLevel(logrus.WarnLevel)
+	case ERROR:
+		logger.SetLevel(logrus.ErrorLevel)
+	}
+
 	// 检查并创建 logs 文件夹
 	if _, err := os.Stat("logs"); os.IsNotExist(err) {
 		err := os.Mkdir("logs", 0755)
 		if err != nil {
-			log.Fatalf("Error creating logs directory: %v", err)
+			logger.Fatalf("Error creating logs directory: %v", err)
 		}
 	}
-	return &Logger{level: level}
+
+	// 设置日志输出
+	logFileName := "./logs/vdc_" + time.Now().Format("2006-01-02") + ".log"
+	file, err := os.OpenFile(logFileName, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		logger.Fatalf("Error opening log file: %v", err)
+	}
+	logger.SetOutput(file)
+	// 设置时间格式
+	logger.SetFormatter(&logrus.TextFormatter{
+		DisableTimestamp: false,
+		TimestampFormat:  "2006-01-02",
+	})
+	return &Logger{logger: logger}
 }
 
 // 日志记录
 func (l *Logger) Log(level LogLevel, msg string) {
-	if level >= l.level {
-		filename := fmt.Sprintf("./logs/vdc_%s.log", time.Now().Format("2006-01-02"))
-		file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer file.Close()
-
-		log.SetOutput(file)
-		switch level {
-		case INFO:
-			log.Println("[INFO] " + msg)
-		case WARNING:
-			log.Println("[WARNING] " + msg)
-		case ERROR:
-			log.Println("[ERROR] " + msg)
-		}
+	switch level {
+	case INFO:
+		l.logger.Info(msg)
+	case WARNING:
+		l.logger.Warn(msg)
+	case ERROR:
+		l.logger.Error(msg)
 	}
 }
 
-func (l *Logger) countLogs() {
-	files, err := ioutil.ReadDir("./logs")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	count := 0
-	for _, file := range files {
-		if strings.HasPrefix(file.Name(), "vdc_") {
-			count++
-		}
-	}
-
-	if count > 5 {
-		l.cleanupLogs()
-	}
-}
-
-// 清理三天前的日志
-func (l *Logger) cleanupLogs() {
-	files, err := ioutil.ReadDir("./logs")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	threeDaysAgo := time.Now().AddDate(0, 0, -3).Format("2006-01-02")
-	for _, file := range files {
-		if strings.Compare(file.Name()[4:14], threeDaysAgo) < 0 && strings.HasPrefix(file.Name(), "vdc_") {
-			os.Remove("./logs/" + file.Name())
-		}
-	}
-}
