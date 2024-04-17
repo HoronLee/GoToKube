@@ -45,6 +45,7 @@ func StartWeb() {
 	router.LoadHTMLGlob("./web/template/*")
 	router.GET("/", vdIndex)
 	router.GET("/json", jsonIndex)
+	router.GET("/search", search)
 	// 创建监听端口
 	if err := router.Run(":8080"); err != nil {
 		wLogger.Log(logger.ERROR, "创建监听端口失败")
@@ -54,13 +55,24 @@ func StartWeb() {
 
 func vdIndex(c *gin.Context) {
 	envInfo := docker.GetEnvInfo()
-	// 渲染模板
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
-		"EnvInfo": envInfo,
+		"DockerV":        envInfo.DockerVersion,
+		"DockerComposeV": envInfo.DockerCVersion,
 	})
 }
 
 func jsonIndex(c *gin.Context) {
 	envInfo := docker.GetEnvInfo()
 	c.JSON(http.StatusOK, envInfo)
+}
+
+func search(c *gin.Context) {
+	imgName, ok := c.GetQuery("image")
+	outPut := make(map[string]interface{})
+	if !ok {
+		outPut["error"] = "No Such Resource."
+	} else {
+		outPut, _ = docker.Dockerclient.DockerLsByImg(imgName)
+	}
+	c.JSON(http.StatusOK, outPut)
 }

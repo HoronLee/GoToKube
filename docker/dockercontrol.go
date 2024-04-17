@@ -3,6 +3,7 @@ package docker
 import (
 	"VDController/logger"
 	"context"
+	"strings"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -43,13 +44,28 @@ func init() {
 	}
 }
 
-// 列出当前容器
+// 获取当前容器
 func (dc *dockerClient) Dockerls() ([]types.Container, error) {
 	containers, err := dc.Client.ContainerList(context.Background(), container.ListOptions{})
 	if err != nil {
-		dLogger.Log(logger.ERROR, "列出容器失败")
+		dLogger.Log(logger.ERROR, "获取容器失败")
 	} else {
-		dLogger.Log(logger.INFO, "列出当前容器")
+		dLogger.Log(logger.INFO, "获取当前容器")
 	}
 	return containers, err
+}
+
+// 通过镜像名获得容器
+func (dc *dockerClient) DockerLsByImg(imgName string) (outPut map[string]interface{}, error error) {
+	outPut = make(map[string]interface{})
+	ctrInfo, _ := dc.Dockerls()
+	for _, ctr := range ctrInfo {
+		if strings.Contains(ctr.Image, imgName) {
+			outPut[ctr.Image] = ctr
+		}
+	}
+	if len(outPut) == 0 {
+		outPut["WARN"] = "No Container matches this condition."
+	}
+	return outPut, nil
 }

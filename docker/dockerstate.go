@@ -29,11 +29,15 @@ func CheckState() {
 	}
 }
 
-var eInfo = make(map[string]interface{})
+var eInfo = envInfo{}
+
+type envInfo struct {
+	DockerVersion  string `json:"dockerVersion"`
+	DockerCVersion string `json:"dockerComposeVersion"`
+}
 
 func dockerChecks(cli *client.Client) (ifok bool, state string) {
 	ctx := context.Background()
-
 	// 检查 Docker 是否在运行
 	_, err := cli.Info(ctx)
 	if err != nil {
@@ -48,7 +52,7 @@ func dockerChecks(cli *client.Client) (ifok bool, state string) {
 		tLogger.Log(logger.ERROR, state)
 		return ifok, state
 	} else {
-		eInfo["DockerVersion"] = sVersion.Version
+		eInfo.DockerVersion = string(sVersion.Version)
 		dstate := "Docker 版本:" + sVersion.Version
 		// 检查 Docker Compose 版本
 		dockerCompV, err := exec.Command("docker-compose", "version").Output()
@@ -61,7 +65,7 @@ func dockerChecks(cli *client.Client) (ifok bool, state string) {
 			if versionIndex != -1 {
 				versionStr := strings.TrimSpace(string(dockerCompV)[versionIndex+len("version v"):])
 				ifok, state = true, dstate+", "+"Docker Compose 版本:"+versionStr
-				eInfo["DcomposeVersion"] = versionStr
+				eInfo.DockerCVersion = versionStr
 			} else {
 				ifok, state = true, dstate+"\n"+"无法获取 Docker Compose 版本"
 			}
@@ -71,6 +75,6 @@ func dockerChecks(cli *client.Client) (ifok bool, state string) {
 	}
 }
 
-func GetEnvInfo() map[string]interface{} {
+func GetEnvInfo() (envInfo envInfo) {
 	return eInfo
 }
