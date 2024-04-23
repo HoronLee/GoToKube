@@ -19,11 +19,11 @@ var exitFlag bool
 
 func Terminal(wg *sync.WaitGroup) {
 	parentMenu := &Menu{
-		name:   "返回上级菜单",
+		name:   "📤返回上级菜单",
 		action: func() {},
 	}
 	exitMenu := &Menu{
-		name: "退出控制台",
+		name: "🔌退出控制台",
 		action: func() {
 			exitFlag = true
 			wg.Done()
@@ -37,7 +37,7 @@ func Terminal(wg *sync.WaitGroup) {
 				subMenu: []*Menu{
 					parentMenu,
 					{
-						name: "查看正在运行的容器",
+						name: "🔋查看正在运行的容器",
 						action: func() {
 							returnValue, err := docker.Dockerclient.Dockerls()
 							if err != nil {

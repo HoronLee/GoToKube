@@ -16,7 +16,7 @@ func main() {
 	// 检查Docker状态
 	docker.CheckState()
 	if config.ConfigData.WebEnable {
-		fmt.Println("✅启动 Web 服务")
+		fmt.Println("✅启动 Web 服务在：" + config.ConfigData.ListeningAddr)
 		go web.StartWeb()
 	} else {
 		fmt.Println("❎不启动 Web 服务")

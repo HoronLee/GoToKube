@@ -1,6 +1,7 @@
 package web
 
 import (
+	"VDController/config"
 	"VDController/docker"
 	"VDController/logger"
 
@@ -26,6 +27,7 @@ func StartWeb() {
 	defer mutex.Unlock()
 	wLogger = logger.NewLogger(logger.INFO)
 	wLogger.Log(logger.INFO, "启动Web程序")
+	listeningAddr := config.ConfigData.ListeningAddr
 	// ======
 	// 此日志仅用于记录 Gin 框架本在终端出现的回显，开发测试用途
 	file, err := os.OpenFile("./logs/web.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
@@ -47,9 +49,12 @@ func StartWeb() {
 	router.GET("/json", jsonIndex)
 	router.GET("/search", search)
 	// 创建监听端口
-	if err := router.Run(":8080"); err != nil {
+	if err := router.Run(listeningAddr); err != nil {
 		wLogger.Log(logger.ERROR, "创建监听端口失败")
 		panic("ListenAndServe: " + err.Error())
+	} else {
+		msg := "Web端在" + listeningAddr + "上开启"
+		wLogger.Log(logger.INFO, msg)
 	}
 }
 

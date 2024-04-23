@@ -1,5 +1,6 @@
 logs/
 .idea/
 VDController
+/VDController.exe
 Dockerfile
 config.toml
