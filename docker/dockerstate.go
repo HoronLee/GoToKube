@@ -55,7 +55,7 @@ func dockerChecks(cli *client.Client) (ifok bool, state string) {
 		eInfo.DockerVersion = string(sVersion.Version)
 		dstate := "Docker 版本:" + sVersion.Version
 		// 检查 Docker Compose 版本
-		dockerCompV, err := exec.Command("docker-compose", "version").Output()
+		dockerCompV, err := exec.Command("docker", "compose", "version").Output()
 		if err != nil {
 			ifok, state = false, "无法获取 Docker Compose 版本，将无法使用Docker Compose功能，\n"+"请参考 https://docs.docker.com/compose/install/ 安装 Docker Compose。"
 			tLogger.Log(logger.WARNING, state)

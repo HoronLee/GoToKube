@@ -99,7 +99,7 @@ func showMenu(menu *Menu) {
 			// 执行菜单项动作
 			if selected.action != nil {
 				selected.action()
-				if selected.name == "返回上级菜单" {
+				if selected.name == "📤返回上级菜单" {
 					break
 				}
 			} else if len(selected.subMenu) > 0 {

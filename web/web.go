@@ -42,9 +42,9 @@ func StartWeb() {
 	// Gin 路由设置
 	router := gin.Default()
 	// 加载静态文件
-	router.Static("/web", "./web/static")
+	router.Static("/web", "./webSrc/static")
 	// 加载模板
-	router.LoadHTMLGlob("./web/template/*")
+	router.LoadHTMLGlob("./webSrc/template/*")
 	router.GET("/", vdIndex)
 	router.GET("/json", jsonIndex)
 	router.GET("/search", search)
@@ -77,7 +77,7 @@ func search(c *gin.Context) {
 	if !ok {
 		outPut["error"] = "No Such Resource."
 	} else {
-		outPut, _ = docker.Dockerclient.DockerLsByImg(imgName)
+		outPut, _ = docker.Dockerclient.DockerlsByImg(imgName)
 	}
 	c.JSON(http.StatusOK, outPut)
 }

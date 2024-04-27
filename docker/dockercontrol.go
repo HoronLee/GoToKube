@@ -10,11 +10,25 @@ import (
 	"github.com/docker/docker/client"
 )
 
-var dLogger = logger.NewLogger(logger.INFO)
+var (
+	dLogger = logger.NewLogger(logger.INFO)
+	// 全局 docker 客户端
+	Dockerclient *dockerClient
+)
 
 // dockerClient 包含 Docker 客户端
 type dockerClient struct {
 	Client *client.Client
+}
+
+func init() {
+	var err error
+	Dockerclient, err = newClient()
+	if err != nil {
+		dLogger.Log(logger.ERROR, "DockerClient 创建失败")
+	} else {
+		dLogger.Log(logger.INFO, "DockerClient 成功创建")
+	}
 }
 
 // NewClient 创建一个包含 Docker 客户端的新实例
@@ -31,19 +45,6 @@ func (dc *dockerClient) Close() error {
 	return dc.Client.Close()
 }
 
-// 全局 docker 客户端
-var Dockerclient *dockerClient
-
-func init() {
-	var err error
-	Dockerclient, err = newClient()
-	if err != nil {
-		dLogger.Log(logger.ERROR, "DockerClient 创建失败 ")
-	} else {
-		dLogger.Log(logger.INFO, "DockerClient 成功创建 ")
-	}
-}
-
 // 获取当前容器
 func (dc *dockerClient) Dockerls() ([]types.Container, error) {
 	containers, err := dc.Client.ContainerList(context.Background(), container.ListOptions{})
@@ -56,7 +57,7 @@ func (dc *dockerClient) Dockerls() ([]types.Container, error) {
 }
 
 // 通过镜像名获得容器
-func (dc *dockerClient) DockerLsByImg(imgName string) (outPut map[string]interface{}, error error) {
+func (dc *dockerClient) DockerlsByImg(imgName string) (outPut map[string]interface{}, error error) {
 	outPut = make(map[string]interface{})
 	ctrInfo, _ := dc.Dockerls()
 	for _, ctr := range ctrInfo {

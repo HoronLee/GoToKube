@@ -32,7 +32,7 @@ func createDefaultConfig(path string) {
 	// 默认配置文件
 	config := Config{
 		WebEnable: false,
-		ListeningAddr: "127.0.0.0:8080",
+		ListeningAddr: "0.0.0.0:8080",
 
 	}
 	// 写入配置
