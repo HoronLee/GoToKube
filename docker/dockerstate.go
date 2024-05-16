@@ -11,8 +11,6 @@ import (
 	"github.com/docker/docker/client"
 )
 
-var tLogger = logger.NewLogger(logger.INFO)
-
 func CheckState() {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
@@ -42,14 +40,14 @@ func dockerChecks(cli *client.Client) (ifok bool, state string) {
 	_, err := cli.Info(ctx)
 	if err != nil {
 		ifok, state = false, "Docker 不在运行，请先启动 Docker! \n"+"请参考 https://docs.docker.com/engine/install/ 安装 Docker。"
-		tLogger.Log(logger.ERROR, state)
+		dLogger.Log(logger.ERROR, state)
 		return ifok, state
 	}
 	// 检查 Docker 版本
 	sVersion, err := cli.ServerVersion(ctx)
 	if err != nil {
 		ifok, state = false, "无法获取 Docker 版本。"
-		tLogger.Log(logger.ERROR, state)
+		dLogger.Log(logger.ERROR, state)
 		return ifok, state
 	} else {
 		eInfo.DockerVersion = string(sVersion.Version)
@@ -58,7 +56,7 @@ func dockerChecks(cli *client.Client) (ifok bool, state string) {
 		dockerCompV, err := exec.Command("docker", "compose", "version").Output()
 		if err != nil {
 			ifok, state = false, "无法获取 Docker Compose 版本，将无法使用Docker Compose功能，\n"+"请参考 https://docs.docker.com/compose/install/ 安装 Docker Compose。"
-			tLogger.Log(logger.WARNING, state)
+			dLogger.Log(logger.WARNING, state)
 			return ifok, state
 		} else {
 			versionIndex := strings.Index(string(dockerCompV), "version")
@@ -70,7 +68,7 @@ func dockerChecks(cli *client.Client) (ifok bool, state string) {
 				ifok, state = true, dstate+"\n"+"无法获取 Docker Compose 版本"
 			}
 		}
-		tLogger.Log(logger.INFO, state)
+		dLogger.Log(logger.INFO, state)
 		return ifok, state
 	}
 }
