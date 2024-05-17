@@ -1,7 +1,7 @@
 package kubernetes
 
 import (
-	//"k8s.io/client-go/kubernetes"
+	"VDController/config"
 	"VDController/logger"
 	"encoding/json"
 
@@ -12,12 +12,17 @@ import (
 var kLogger = logger.NewLogger(logger.INFO)
 
 func InitK8s() {
-	config, _ := createKubeConfig()
+	config, err := createKubeConfig()
+	if err != nil {
+		kLogger.Log(logger.ERROR, err.Error())
+		return
+	}
 	outPut, _ := json.Marshal(config)
+	// fmt.Println(outPut)
 	kLogger.Log(logger.INFO, string(outPut))
 }
 func createKubeConfig() (*rest.Config, error) {
-	kubeconfigPath := "~/.kube/config"
+	kubeconfigPath := config.ConfigData.KubeconfigPath
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfigPath)
 	if err != nil {
 		return nil, err

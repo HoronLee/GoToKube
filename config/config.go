@@ -8,8 +8,10 @@ import (
 )
 
 type Config struct {
-	WebEnable bool `toml:"WebEnable"`
-	ListeningAddr string `toml:"ListeningPort"`
+	WebEnable      bool   `toml:"WebEnable"`
+	ListeningAddr  string `toml:"ListeningPort"`
+	KubeconfigPath string `toml:"KubeconfigPath"`
+	KubeEnable     bool   `toml:"KubeEnable"`
 }
 
 var (
@@ -31,9 +33,10 @@ func init() {
 func createDefaultConfig(path string) {
 	// 默认配置文件
 	config := Config{
-		WebEnable: false,
-		ListeningAddr: "0.0.0.0:8080",
-
+		WebEnable:      false,
+		ListeningAddr:  "0.0.0.0:8080",
+		KubeEnable:     false,
+		KubeconfigPath: "~/.kube/config",
 	}
 	// 写入配置
 	file, err := os.Create(path)
