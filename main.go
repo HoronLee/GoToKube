@@ -15,7 +15,7 @@ func main() {
 	mLogger := logger.NewLogger(logger.INFO)
 	mLogger.Log(logger.INFO, "启动主程序")
 	// 检查Docker状态
-	docker.CheckState()
+	docker.Checkstatus()
 	if config.ConfigData.KubeEnable {
 		fmt.Println("⚓️已启用 kubenetes 控制器")
 		kubernetes.InitKubernetes()

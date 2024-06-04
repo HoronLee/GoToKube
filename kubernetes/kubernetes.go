@@ -4,6 +4,7 @@ import (
 	"VDController/config"
 	"VDController/logger"
 	"flag"
+	"os"
 	"path/filepath"
 
 	"k8s.io/client-go/kubernetes"
@@ -43,9 +44,9 @@ func InitKubernetes() {
 	kubeClient, err = kubernetes.NewForConfig(config)
 	if err != nil {
 		kLogger.Log(logger.ERROR, err.Error())
-		return
+		os.Exit(1)
 	} else {
 		kLogger.Log(logger.INFO, "Kubernetes Client Create Success")
+		GetK8sVersion()
 	}
-	GetK8sVersion()
 }
