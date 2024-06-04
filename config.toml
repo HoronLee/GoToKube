@@ -1,4 +1,4 @@
 WebEnable = true
 ListeningPort = '0.0.0.0:1024'
 KubeEnable = true
-KubeconfigPath = '/Users/horonlee/Downloads/k8s/config'
+KubeconfigPath = ''
