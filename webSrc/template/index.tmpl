@@ -4,51 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- 浏览器标签上显示的网站标题 -->
     <title>VDController👾</title>
-    <!-- 网站介绍 -->
-    <meta name="description" content="VDController👾">
-    <!-- 网站关键字 -->
-    <meta name="keywords" content="VDController👾">
-    <!-- 浏览器标签上显示的图标 -->
     <link rel="icon" type="image/ico" href="https://bu.dusays.com/2023/02/05/63dfc7f2ced91.png">
-    <!-- 样式文件 -->
-    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.12.1/css/all.min.css">
-    <link rel="stylesheet" href="/web/style.css?v=1.2.0">
-    <!-- 自定义设置 -->
-    <style>
-        body {
-            /*背景图片URL 可使用随机图片API */
-            background-image: url("https://bu.dusays.com/2023/03/28/6422acc196d9a.png");
-        }
-        .photo-bg {
-            /* 卡片左侧图片 */
-            background-image: url("https://bu.dusays.com/2024/04/16/661de9ad6ce63.png");
-        }
-    </style>
 </head>
 
 <body>
-    <div id="main" class="container">
-        <div class="row my-card justify-content-center">
-            <div class="col-lg-4 photo-bg"></div>
-            <div class="col-lg-8 card">
-                <!-- 大标题 -->
-                <h1>Visual Docker Controller</h1>
-                <!-- 标题下的一段话 -->
-                <ul>
-                    <li>Docker 版本：{{.DockerV}}</li>
-                    <li>DockerCompose 版本：{{.DockerComposeV}}</li>
-                <ul class="social mt-1">
-                    <li><a href="https://github.com/HoronLee/VisualDocker"><i class="fab fa-github" aria-hidden="true"></i></a></li>
-                </ul>
-                <footer>
-                    <p>Copyright 2023<a href="https://horonlee.com/" target="_blank">-</a>
-                        <a href="http://beian.miit.gov.cn/" target="_blank">浙ICP备2023037163号</a>
-                    </p>
-                </footer>
-            </div>
-        </div>
-    </div>
+    <h1>Visual Docker Controller</h1>
+    <ul>
+        <li>🐳Docker 版本：{{.DockerV}}</li>
+        <li>🐙DockerCompose 版本：{{.DockerComposeV}}</li>
+        <li>⚓️Kubernetes 版本：{{.KubeVersion}}</li>
 </html>

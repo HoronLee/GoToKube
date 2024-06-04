@@ -18,7 +18,7 @@ func main() {
 	docker.CheckState()
 	if config.ConfigData.KubeEnable {
 		fmt.Println("⚓️已启用 kubenetes 控制器")
-		kubernetes.InitK8s()
+		kubernetes.InitKubernetes()
 	} else {
 		fmt.Println("⚓️不启用 kubenetes 控制器")
 	}

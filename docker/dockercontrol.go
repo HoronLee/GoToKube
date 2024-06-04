@@ -68,5 +68,5 @@ func (dc *dockerClient) DockerlsByImg(imgName string) (outPut map[string]interfa
 	if len(outPut) == 0 {
 		outPut["WARN"] = "No Container matches this condition."
 	}
-	return outPut, nil
+	return outPut, error
 }

@@ -3,6 +3,7 @@ package terminal
 import (
 	"VDController/docker"
 	"VDController/web"
+	"VDController/kubernetes"
 	"bufio"
 	"fmt"
 	"os"
@@ -46,7 +47,19 @@ func Terminal(wg *sync.WaitGroup) {
 							for _, ctr := range returnValue {
 								fmt.Printf("%s %s %s\n", ctr.ID[:3], ctr.Image, ctr.Status)
 							}
-							fmt.Println("============")
+						},
+					},
+					exitMenu,
+				},
+			},
+			{
+				name: "⚓️Kubernetes",
+				subMenu: []*Menu{
+					parentMenu,
+					{
+						name: "列出所有 Pod",
+						action: func() {
+							kubernetes.GetAllPods()
 						},
 					},
 					exitMenu,
@@ -60,7 +73,7 @@ func Terminal(wg *sync.WaitGroup) {
 						name: "启动网页端",
 						action: func() {
 							go web.StartWeb()
-							fmt.Println("🌐启动网页端成功\n" + "============")
+							fmt.Println("✅启动网页端成功")
 						},
 					},
 					exitMenu,
