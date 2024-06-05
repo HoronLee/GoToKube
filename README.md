@@ -7,15 +7,13 @@
 </p>
 
 <pre align="center">
+Makes it easier and faster to use docker
 🧪 developing
 </pre>
 
 - **English** | [简体中文](./README.zh-CN.md)
 
-> Makes it easier and faster to use docker
-> Required Docker Client API Version >= 1.45
-
-Current progress:
+## Current progress:
 1. You can view docker information through the console.
 2. The console will terminate the application if it detects a Docker exception.
 3. Displaying information through the web interface
@@ -23,6 +21,8 @@ Current progress:
 5. soon...
 
 ## How to build
+
+> Required Docker Client API Version >= 1.45
 
 1. Go to the project directory and execute `go build`. 2.
 2. Get the `VDController` binary and give it executable permissions `sudo chmod +x VDController`. 3.

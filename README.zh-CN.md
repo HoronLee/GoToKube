@@ -7,15 +7,13 @@
 </p>
 
 <pre align="center">
+让你更加方便快捷的使用docker
 🧪 开发中
 </pre>
 
 - [English](./README.md) | **简体中文**
 
-> 让你更加方便快捷的使用docker
-> 需要的 Docker Client API Version >= 1.45
-
-目前进度：
+## 目前进度：
 1. 可以通过控制台查看docker的信息
 2. 控制台检测到Docker异常会终止程序
 3. 通过 Web 界面展示信息
@@ -23,6 +21,8 @@
 5. soon...
 
 ## 构建方法
+
+> 需要的 Docker Client API Version >= 1.45
 
 1. 进入项目目录执行`go build`
 2. 得到`VDController`二进制文件，给予可执行权限`sudo chmod +x VDController`
