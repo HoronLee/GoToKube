@@ -2,8 +2,8 @@ package terminal
 
 import (
 	"VDController/docker"
-	"VDController/web"
 	"VDController/kubernetes"
+	"VDController/web"
 	"bufio"
 	"fmt"
 	"os"
@@ -40,7 +40,7 @@ func Terminal(wg *sync.WaitGroup) {
 					{
 						name: "🔋查看正在运行的容器",
 						action: func() {
-							returnValue, err := docker.Dockerclient.Dockerls()
+							returnValue, err := docker.Dockerls()
 							if err != nil {
 								fmt.Println(err)
 							}

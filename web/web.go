@@ -51,7 +51,7 @@ func StartWeb() {
 	router.GET("/search", search)
 	jsonIndex := router.Group("/json")
 	{
-		jsonIndex.GET("/docker", dockerJson)	
+		jsonIndex.GET("/docker", dockerJson)
 		jsonIndex.GET("/kube", kubeJson)
 	}
 	// 创建监听端口
@@ -85,7 +85,7 @@ func search(c *gin.Context) {
 	if !ok {
 		outPut["error"] = "No Such Resource."
 	} else {
-		outPut, _ = docker.Dockerclient.DockerlsByImg(imgName)
+		outPut, _ = docker.DockerlsByImg(imgName)
 	}
 	c.JSON(http.StatusOK, outPut)
 }

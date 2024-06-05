@@ -12,18 +12,13 @@ import (
 
 var (
 	dLogger = logger.NewLogger(logger.INFO)
-	// 全局 docker 客户端
-	Dockerclient *dockerClient
-)
 
-// dockerClient 包含 Docker 客户端
-type dockerClient struct {
-	Client *client.Client
-}
+	dockerClient *client.Client
+)
 
 func init() {
 	var err error
-	Dockerclient, err = newClient()
+	dockerClient, err = newClient()
 	if err != nil {
 		dLogger.Log(logger.ERROR, "DockerClient 创建失败")
 	} else {
@@ -32,22 +27,22 @@ func init() {
 }
 
 // NewClient 创建一个包含 Docker 客户端的新实例
-func newClient() (*dockerClient, error) {
+func newClient() (*client.Client, error) {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
 		return nil, err
 	}
-	return &dockerClient{Client: cli}, nil
+	return cli, nil
 }
 
 // Close 关闭 Docker 客户端连接
-func (dc *dockerClient) Close() error {
-	return dc.Client.Close()
+func Close() error {
+	return dockerClient.Close()
 }
 
-// 获取当前容器
-func (dc *dockerClient) Dockerls() ([]types.Container, error) {
-	containers, err := dc.Client.ContainerList(context.Background(), container.ListOptions{})
+// Dockerls 获取当前容器
+func Dockerls() ([]types.Container, error) {
+	containers, err := dockerClient.ContainerList(context.Background(), container.ListOptions{})
 	if err != nil {
 		dLogger.Log(logger.ERROR, "获取容器失败")
 	} else {
@@ -56,17 +51,22 @@ func (dc *dockerClient) Dockerls() ([]types.Container, error) {
 	return containers, err
 }
 
-// 通过镜像名获得容器
-func (dc *dockerClient) DockerlsByImg(imgName string) (outPut map[string]interface{}, error error) {
-	outPut = make(map[string]interface{})
-	ctrInfo, _ := dc.Dockerls()
-	for _, ctr := range ctrInfo {
+// DockerlsByImg 通过镜像名获得容器
+func DockerlsByImg(imgName string) (map[string]interface{}, error) {
+	containers, err := Dockerls()
+	if err != nil {
+		return nil, err
+	}
+
+	output := make(map[string]interface{})
+	for _, ctr := range containers {
 		if strings.Contains(ctr.Image, imgName) {
-			outPut[ctr.Image] = ctr
+			output[ctr.Image] = ctr
 		}
 	}
-	if len(outPut) == 0 {
-		outPut["WARN"] = "No Container matches this condition."
+
+	if len(output) == 0 {
+		output["WARN"] = "No Container matches this condition."
 	}
-	return outPut, error
+	return output, nil
 }

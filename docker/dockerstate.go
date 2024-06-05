@@ -70,7 +70,3 @@ func dockerChecks(cli *client.Client) (ifok bool, status string) {
 		return ifok, status
 	}
 }
-
-func GetEnvInfo() (envInfo Info) {
-	return EnvInfo
-}
