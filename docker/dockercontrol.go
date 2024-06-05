@@ -11,18 +11,16 @@ import (
 )
 
 var (
-	dLogger = logger.NewLogger(logger.INFO)
-
 	dockerClient *client.Client
 )
 
-func init() {
+func initDocker() {
 	var err error
 	dockerClient, err = newClient()
 	if err != nil {
-		dLogger.Log(logger.ERROR, "DockerClient 创建失败")
+		logger.GlobalLogger.Log(logger.ERROR, "DockerClient 创建失败")
 	} else {
-		dLogger.Log(logger.INFO, "DockerClient 成功创建")
+		logger.GlobalLogger.Log(logger.INFO, "DockerClient 成功创建")
 	}
 }
 
@@ -44,9 +42,9 @@ func Close() error {
 func Dockerls() ([]types.Container, error) {
 	containers, err := dockerClient.ContainerList(context.Background(), container.ListOptions{})
 	if err != nil {
-		dLogger.Log(logger.ERROR, "获取容器失败")
+		logger.GlobalLogger.Log(logger.ERROR, "获取容器失败")
 	} else {
-		dLogger.Log(logger.INFO, "获取当前容器")
+		logger.GlobalLogger.Log(logger.INFO, "获取当前容器")
 	}
 	return containers, err
 }

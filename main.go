@@ -12,13 +12,12 @@ import (
 )
 
 func main() {
-	mLogger := logger.NewLogger(logger.INFO)
-	mLogger.Log(logger.INFO, "启动主程序")
+	logger.InitGlobalLogger(logger.INFO)
 	// 检查Docker状态
 	docker.Checkstatus()
 	if config.ConfigData.KubeEnable {
 		fmt.Println("⚓️已启用 kubenetes 控制器")
-		kubernetes.InitKubernetes()
+		kubernetes.Checkstatus()
 	} else {
 		fmt.Println("⚓️不启用 kubenetes 控制器")
 	}

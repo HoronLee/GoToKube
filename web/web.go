@@ -16,8 +16,7 @@ import (
 )
 
 var (
-	// Web端日志记录器
-	wLogger *logger.Logger
+
 	// 互斥锁，保证线程安全
 	mutex sync.Mutex
 )
@@ -26,8 +25,7 @@ func StartWeb() {
 	// 加锁，确保线程安全
 	mutex.Lock()
 	defer mutex.Unlock()
-	wLogger = logger.NewLogger(logger.INFO)
-	wLogger.Log(logger.INFO, "Launching the Web Application")
+	logger.GlobalLogger.Log(logger.INFO, "Launching the Web Application")
 	listeningAddr := config.ConfigData.ListeningAddr
 	// ============
 	// 此日志仅用于记录 Gin 框架本在终端出现的回显，开发测试用途
@@ -56,11 +54,11 @@ func StartWeb() {
 	}
 	// 创建监听端口
 	if err := router.Run(listeningAddr); err != nil {
-		wLogger.Log(logger.ERROR, "Failed to create listening port")
+		logger.GlobalLogger.Log(logger.ERROR, "Failed to create listening port")
 		panic("ListenAndServe: " + err.Error())
 	} else {
 		msg := "Listening and serving HTTP on" + listeningAddr
-		wLogger.Log(logger.INFO, msg)
+		logger.GlobalLogger.Log(logger.INFO, msg)
 	}
 }
 

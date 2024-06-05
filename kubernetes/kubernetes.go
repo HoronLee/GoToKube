@@ -13,40 +13,37 @@ import (
 )
 
 var (
-	kLogger    = logger.NewLogger(logger.INFO)
 	kubeClient *kubernetes.Clientset
-	EnvInfo = Info{}
+	EnvInfo    = Info{}
 )
 
 type Info struct {
 	KubeVersion string `json:"kubeVersion"`
 }
-func InitKubernetes() {
+
+func Checkstatus() {
 	// 获取 kubernetes 配置文件
 	var kubeconfig string
-	kubeConfigPath := config.ConfigData.KubeconfigPath
-	if kubeConfigPath == "" {
+	kubeconfig = config.ConfigData.KubeconfigPath
+	if kubeconfig == "" {
 		if home := homedir.HomeDir(); home != "" {
 			kubeconfig = filepath.Join(home, ".kube", "config")
 		}
-	} else {
-		kubeconfig = kubeConfigPath
+		flag.StringVar(&kubeconfig, "kubeconfig", kubeconfig, "(optional) absolute path to the kubeconfig file")
 	}
-	// 解析 kubeconfig 文件路径
-	flag.StringVar(&kubeconfig, "kubeconfig", kubeconfig, "(optional) absolute path to the kubeconfig file")
 	flag.Parse()
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 	if err != nil {
-		kLogger.Log(logger.ERROR, err.Error())
+		logger.GlobalLogger.Log(logger.ERROR, err.Error())
 		return
 	}
 	// 创建 kubernetes 客户端
 	kubeClient, err = kubernetes.NewForConfig(config)
 	if err != nil {
-		kLogger.Log(logger.ERROR, err.Error())
+		logger.GlobalLogger.Log(logger.ERROR, err.Error())
 		os.Exit(1)
 	} else {
-		kLogger.Log(logger.INFO, "Kubernetes Client Create Success")
+		logger.GlobalLogger.Log(logger.INFO, "Kubernetes Client Create Success")
 		GetK8sVersion()
 	}
 }

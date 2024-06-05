@@ -11,25 +11,25 @@ import (
 	"github.com/docker/docker/client"
 )
 
+var EnvInfo = Info{}
+
+type Info struct {
+	DockerVersion  string `json:"dockerVersion"`
+	DockerCVersion string `json:"dockerComposeVersion"`
+}
+
 func Checkstatus() {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
 		fmt.Println("Failed to create Docker client:", err)
 		os.Exit(1)
 	}
-
 	ifok, status := dockerChecks(cli)
 	if !ifok {
 		fmt.Println(status)
 		os.Exit(1)
 	}
-}
-
-var EnvInfo = Info{}
-
-type Info struct {
-	DockerVersion  string `json:"dockerVersion"`
-	DockerCVersion string `json:"dockerComposeVersion"`
+	initDocker()
 }
 
 func dockerChecks(cli *client.Client) (ifok bool, status string) {
@@ -38,14 +38,14 @@ func dockerChecks(cli *client.Client) (ifok bool, status string) {
 	_, err := cli.Info(ctx)
 	if err != nil {
 		ifok, status = false, fmt.Sprint(err)
-		dLogger.Log(logger.ERROR, status)
+		logger.GlobalLogger.Log(logger.ERROR, status)
 		return ifok, status
 	}
 	// 检查 Docker 版本
 	sVersion, err := cli.ServerVersion(ctx)
 	if err != nil {
 		ifok, status = false, "无法获取 Docker 版本。"
-		dLogger.Log(logger.ERROR, status)
+		logger.GlobalLogger.Log(logger.ERROR, status)
 		return ifok, status
 	} else {
 		EnvInfo.DockerVersion = string(sVersion.Version)
@@ -54,7 +54,7 @@ func dockerChecks(cli *client.Client) (ifok bool, status string) {
 		dockerCompV, err := exec.Command("docker", "compose", "version").Output()
 		if err != nil {
 			ifok, status = false, "无法获取 Docker Compose 版本，将无法使用Docker Compose功能，\n"+"请参考 https://docs.docker.com/compose/install/ 安装 Docker Compose。"
-			dLogger.Log(logger.WARNING, status)
+			logger.GlobalLogger.Log(logger.WARNING, status)
 			return ifok, status
 		} else {
 			versionIndex := strings.Index(string(dockerCompV), "version")
@@ -66,7 +66,7 @@ func dockerChecks(cli *client.Client) (ifok bool, status string) {
 				ifok, status = true, dstatus+"\n"+"无法获取 Docker Compose 版本"
 			}
 		}
-		dLogger.Log(logger.INFO, status)
+		logger.GlobalLogger.Log(logger.INFO, status)
 		return ifok, status
 	}
 }
