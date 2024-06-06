@@ -95,7 +95,7 @@ func (l *Logger) Log(level LogLevel, msg string) {
 	}
 }
 
-// ChatGPT: 只体现了借口的灵活性，实际上可以直接使用logrus提供的方法
+// ChatGPT: 可以直接使用logrus提供的方法
 func (l *Logger) Info(msg string) {
 	l.logger.Info(msg)
 }

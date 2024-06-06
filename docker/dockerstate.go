@@ -18,7 +18,7 @@ type Info struct {
 	DockerCVersion string `json:"dockerComposeVersion"`
 }
 
-func Checkstatus() {
+func CheckStatus() {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
 		fmt.Println("Failed to create Docker client:", err)

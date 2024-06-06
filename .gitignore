@@ -5,3 +5,4 @@ VDController
 Dockerfile
 er.name
 config.toml
+data.db

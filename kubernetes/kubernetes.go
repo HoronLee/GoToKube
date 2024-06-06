@@ -4,6 +4,7 @@ import (
 	"VDController/config"
 	"VDController/logger"
 	"flag"
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -21,7 +22,13 @@ type Info struct {
 	KubeVersion string `json:"kubeVersion"`
 }
 
-func Checkstatus() {
+func CheckStatus() {
+	if config.ConfigData.KubeEnable {
+		fmt.Println("⚓️已启用 kubenetes 控制器")
+	} else {
+		fmt.Println("⚓️不启用 kubenetes 控制器")
+		return
+	}
 	// 获取 kubernetes 配置文件
 	var kubeconfig string
 	kubeconfig = config.ConfigData.KubeconfigPath

@@ -13,12 +13,12 @@
 
 - [English](./README.md) | **简体中文**
 
-## 目前进度：
-1. 可以通过控制台查看docker的信息
-2. 控制台检测到Docker异常会终止程序
-3. 通过 Web 界面展示信息
-4. 对接 Kubernetes 集群，可以通过控制台显示所有 Pod
-5. soon...
+## TODO：
+- [x] 可以通过控制台查看docker的信息
+- [x] 控制台检测到Docker异常会终止程序
+- [x] 通过 Web 界面展示信息
+- [x] 对接 Kubernetes 集群，可以通过控制台显示所有 Pod
+- [ ] 多数据库支持(SQLite MySQL) 
 
 ## 构建方法
 

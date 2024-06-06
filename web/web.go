@@ -4,6 +4,7 @@ import (
 	"VDController/config"
 	"VDController/logger"
 	"VDController/web/routes"
+	"fmt"
 
 	"sync"
 )
@@ -13,6 +14,15 @@ var (
 	// 互斥锁，保证线程安全
 	mutex sync.Mutex
 )
+
+func CheckStatus() {
+	if config.ConfigData.WebEnable {
+		fmt.Println("✅在 http://" + config.ConfigData.ListeningAddr + " 上启动 Web 服务")
+		go StartWeb()
+	} else {
+		fmt.Println("❎不启动 Web 服务")
+	}
+}
 
 func StartWeb() {
 	mutex.Lock()

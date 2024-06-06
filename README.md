@@ -13,12 +13,12 @@ Makes it easier and faster to use docker
 
 - **English** | [简体中文](./README.zh-CN.md)
 
-## Current progress:
-1. You can view docker information through the console.
-2. The console will terminate the application if it detects a Docker exception.
-3. Displaying information through the web interface
-4. Connect to Kubernetes cluster and show all pods through console.
-5. soon...
+## TODO:
+- [x] You can view docker information through the console.
+- [x] The console will terminate the application if it detects a Docker exception.
+- [x] Displaying information through the web interface
+- [x] Connect to Kubernetes cluster and show all pods through console.
+- [ ] Multi-database support(SQLite MySQL)
 
 ## How to build
 

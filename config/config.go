@@ -12,6 +12,12 @@ type Config struct {
 	ListeningAddr  string `toml:"ListeningPort"`
 	KubeEnable     bool   `toml:"KubeEnable"`
 	KubeconfigPath string `toml:"KubeconfigPath"`
+	DBType         string `toml:"DBType"`
+	DBPath         string `toml:"DBPath"`
+	DBAddr         string `toml:"DBAddress"`
+	DBUser         string `toml:"DBUser"`
+	DBPass         string `toml:"DBPassword"`
+	DBName         string `toml:"DBName"`
 }
 
 var (
@@ -30,13 +36,19 @@ func init() {
 	ConfigData = readConfig(configPath)
 }
 
+// 默认配置文件
 func createDefaultConfig(path string) {
-	// 默认配置文件
 	config := Config{
 		WebEnable:      false,
-		ListeningAddr:  "0.0.0.0:8080",
+		ListeningAddr:  ":8080",
 		KubeEnable:     false,
 		KubeconfigPath: "",
+		DBType:         "sqlite",
+		DBPath:         "",
+		DBAddr:         "",
+		DBUser:         "",
+		DBPass:         "",
+		DBName:         "",
 	}
 	// 写入配置
 	file, err := os.Create(path)
@@ -53,8 +65,8 @@ func createDefaultConfig(path string) {
 
 }
 
+// 读取配置文件
 func readConfig(path string) Config {
-	// 读取配置文件
 	var config Config
 	file, err := os.Open(path)
 	if err != nil {
