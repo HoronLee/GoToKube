@@ -44,16 +44,16 @@ func dockerChecks(cli *client.Client) (ifok bool, status string) {
 	// 检查 Docker 版本
 	sVersion, err := cli.ServerVersion(ctx)
 	if err != nil {
-		ifok, status = false, "无法获取 Docker 版本。"
+		ifok, status = false, "Unable to get Docker version."
 		logger.GlobalLogger.Log(logger.ERROR, status)
 		return ifok, status
 	} else {
 		EnvInfo.DockerVersion = string(sVersion.Version)
-		dstatus := "Docker 版本:" + sVersion.Version
+		dstatus := "Docker version:" + sVersion.Version
 		// 检查 Docker Compose 版本
 		dockerCompV, err := exec.Command("docker", "compose", "version").Output()
 		if err != nil {
-			ifok, status = false, "无法获取 Docker Compose 版本，将无法使用Docker Compose功能，\n"+"请参考 https://docs.docker.com/compose/install/ 安装 Docker Compose。"
+			ifok, status = false, "Unable to get the Docker Compose version, you will not be able to use the Docker Compose feature，\n"+"See https://docs.docker.com/compose/install/ to install Docker Compose."
 			logger.GlobalLogger.Log(logger.WARNING, status)
 			return ifok, status
 		} else {
@@ -63,7 +63,7 @@ func dockerChecks(cli *client.Client) (ifok bool, status string) {
 				ifok, status = true, dstatus+", "+"Docker Compose 版本:"+versionStr
 				EnvInfo.DockerCVersion = versionStr
 			} else {
-				ifok, status = true, dstatus+"\n"+"无法获取 Docker Compose 版本"
+				ifok, status = true, dstatus+"\n"+"Unable to get Docker Compose version."
 			}
 		}
 		logger.GlobalLogger.Log(logger.INFO, status)

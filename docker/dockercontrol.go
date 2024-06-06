@@ -18,9 +18,9 @@ func initDocker() {
 	var err error
 	dockerClient, err = newClient()
 	if err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, "DockerClient 创建失败")
+		logger.GlobalLogger.Log(logger.ERROR, "Docker Client creation failed")
 	} else {
-		logger.GlobalLogger.Log(logger.INFO, "DockerClient 成功创建")
+		logger.GlobalLogger.Log(logger.INFO, "Docker Client was successfully created")
 	}
 }
 
