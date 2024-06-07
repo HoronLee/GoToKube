@@ -44,7 +44,7 @@ func createDefaultConfig(path string) {
 		KubeEnable:     false,
 		KubeconfigPath: "",
 		DBType:         "sqlite",
-		DBPath:         "",
+		DBPath:         "data.db",
 		DBAddr:         "",
 		DBUser:         "",
 		DBPass:         "",

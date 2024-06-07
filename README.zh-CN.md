@@ -18,7 +18,7 @@
 - [x] 控制台检测到Docker异常会终止程序
 - [x] 通过 Web 界面展示信息
 - [x] 对接 Kubernetes 集群，可以通过控制台显示所有 Pod
-- [ ] 多数据库支持(SQLite MySQL) 
+- [ ] 多数据库支持(SQLite MySQL)
 
 ## 构建方法
 
@@ -33,11 +33,17 @@
 
 > 配置文件在第一次运行后会在程序同级目录生成，随后可自行更改
 
-- WebEnable = true&false 开启程序后是否自动开启网页功能
-- ListeningPort = '0.0.0.0:8080' 网页功能的监听地址以及端口
-- KubeEnable = true&false 开启程序后是否自动开启 kubernetes 功能
-- KubeconfigPath = '.kube/config 文件路径' kubernetes 功能的配置文件路径
+- `WebEnable = true&false` 开启程序后是否自动开启网页功能
+- `ListeningPort = '0.0.0.0:8080'` 网页功能的监听地址以及端口
+- `KubeEnable = true&false` 开启程序后是否自动开启 kubernetes 功能
+- `KubeconfigPath = '.kube/config 文件路径'` kubernetes 功能的配置文件路径
   - 如果不填写此项，则默认会使用 $HOME/.kube/config`''`
+- `DBType = 'sqlite&mysql'` 数据库类型，默认为 sqlite，目前仅支持 sqlite和mysql
+- `DBPath = 'data.db'` 数据库文件路径，默认为程序当前目录的`data.db`
+- `DBAddr = '127.0.0.1:3306'` 数据库地址
+- `DBUser = 'root'` 数据库用户名
+- `DBPass = 'password'` 数据库密码
+- `DBName = 'test'` 数据库名称
 
 示例：
 ```toml

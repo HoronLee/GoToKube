@@ -33,11 +33,17 @@ Makes it easier and faster to use docker
 
 > The configuration file is created in the same directory as the application after the first run and can be changed later.
 
-- `WebEnable = true&false` Whether or not to enable the web function automatically after starting the application.
-- `ListeningPort = '0.0.0.0:8080'` Listening address and port for the web feature.
-- `KubeEnable = true&false` Whether or not to enable kubernetes automatically when the application is started.
-- `KubeconfigPath = '.kube/config file path'` Path to the configuration file for the kubernetes feature.
-    - If this field is not filled in, `$HOME/.kube/config` will be used by default.
+- `WebEnable = true&false` Whether to automatically enable the web function after starting the program
+- `ListeningPort = '0.0.0.0:8080'` The listening address and port for the web function
+- `KubeEnable = true&false` Whether to automatically enable the Kubernetes function after starting the program
+- `KubeconfigPath = '.kube/config file path'` The configuration file path for the Kubernetes function
+    - If not specified, the default will be `$HOME/.kube/config`
+- `DBType = 'sqlite&mysql'` Database type, defaults to sqlite. Currently, only sqlite and mysql are supported
+- `DBPath = 'data.db'` Database file path, defaults to `data.db` in the current directory of the program
+- `DBAddr = '127.0.0.1:3306'` Database address
+- `DBUser = 'root'` Database username
+- `DBPass = 'password'` Database password
+- `DBName = 'test'` Database name
 
 Example:
 ```toml

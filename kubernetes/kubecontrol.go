@@ -1,9 +1,10 @@
 package kubernetes
 
 import (
+	"VDController/database"
+	"VDController/web/models"
 	"context"
 	"fmt"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -25,4 +26,5 @@ func GetK8sVersion() {
 		panic(err.Error())
 	}
 	EnvInfo.KubeVersion = version.String()
+	database.SaveOrUpdateStatusInfo(models.StatusInfo{Component: "Kubernetes", Version: version.String(), Status: "OK"})
 }

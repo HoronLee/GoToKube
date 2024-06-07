@@ -1,10 +1,11 @@
 package docker
 
 import (
+	"VDController/database"
 	"VDController/logger"
+	"VDController/web/models"
 	"context"
 	"fmt"
-	"os"
 	"os/exec"
 	"strings"
 
@@ -18,18 +19,20 @@ type Info struct {
 	DockerCVersion string `json:"dockerComposeVersion"`
 }
 
-func CheckStatus() {
+func CheckStatus() bool {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
 		fmt.Println("Failed to create Docker client:", err)
-		os.Exit(1)
+		return false
 	}
 	ifok, status := dockerChecks(cli)
 	if !ifok {
 		fmt.Println(status)
-		os.Exit(1)
+		return false
 	}
+	cli.Close()
 	initDocker()
+	return true
 }
 
 func dockerChecks(cli *client.Client) (ifok bool, status string) {
@@ -66,6 +69,9 @@ func dockerChecks(cli *client.Client) (ifok bool, status string) {
 				ifok, status = true, dstatus+"\n"+"Unable to get Docker Compose version."
 			}
 		}
+		//db.Where(models.StatusInfo{Component: "Docker"}).FirstOrCreate(&models.StatusInfo{}, models.StatusInfo{Component: "Docker", Version: EnvInfo.DockerVersion, Status: "OK"})
+		database.SaveOrUpdateStatusInfo(models.StatusInfo{Component: "Docker", Version: EnvInfo.DockerVersion, Status: "Running"})
+		database.SaveOrUpdateStatusInfo(models.StatusInfo{Component: "DockerCompose", Version: EnvInfo.DockerCVersion, Status: "Running"})
 		logger.GlobalLogger.Log(logger.INFO, status)
 		return ifok, status
 	}

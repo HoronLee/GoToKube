@@ -5,7 +5,6 @@ import (
 	"VDController/logger"
 	"flag"
 	"fmt"
-	"os"
 	"path/filepath"
 
 	"k8s.io/client-go/kubernetes"
@@ -22,16 +21,15 @@ type Info struct {
 	KubeVersion string `json:"kubeVersion"`
 }
 
-func CheckStatus() {
+func CheckStatus() bool {
 	if config.ConfigData.KubeEnable {
 		fmt.Println("⚓️已启用 kubenetes 控制器")
 	} else {
 		fmt.Println("⚓️不启用 kubenetes 控制器")
-		return
+		return true
 	}
 	// 获取 kubernetes 配置文件
-	var kubeconfig string
-	kubeconfig = config.ConfigData.KubeconfigPath
+	kubeconfig := config.ConfigData.KubeconfigPath
 	if kubeconfig == "" {
 		if home := homedir.HomeDir(); home != "" {
 			kubeconfig = filepath.Join(home, ".kube", "config")
@@ -39,18 +37,19 @@ func CheckStatus() {
 		flag.StringVar(&kubeconfig, "kubeconfig", kubeconfig, "(optional) absolute path to the kubeconfig file")
 	}
 	flag.Parse()
-	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+	kubeConfig, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 	if err != nil {
 		logger.GlobalLogger.Log(logger.ERROR, err.Error())
-		return
+		return false
 	}
 	// 创建 kubernetes 客户端
-	kubeClient, err = kubernetes.NewForConfig(config)
+	kubeClient, err = kubernetes.NewForConfig(kubeConfig)
 	if err != nil {
 		logger.GlobalLogger.Log(logger.ERROR, err.Error())
-		os.Exit(1)
+		return false
 	} else {
 		logger.GlobalLogger.Log(logger.INFO, "Kubernetes Client Create Success")
 		GetK8sVersion()
+		return true
 	}
 }
