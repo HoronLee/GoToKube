@@ -4,7 +4,6 @@ import (
 	"VDController/config"
 	"VDController/logger"
 	"flag"
-	"fmt"
 	"path/filepath"
 
 	"k8s.io/client-go/kubernetes"
@@ -22,12 +21,6 @@ type Info struct {
 }
 
 func CheckStatus() bool {
-	if config.ConfigData.KubeEnable {
-		fmt.Println("⚓️已启用 kubenetes 控制器")
-	} else {
-		fmt.Println("⚓️不启用 kubenetes 控制器")
-		return true
-	}
 	// 获取 kubernetes 配置文件
 	kubeconfig := config.ConfigData.KubeconfigPath
 	if kubeconfig == "" {

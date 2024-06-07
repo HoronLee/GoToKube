@@ -1,6 +1,7 @@
 package main
 
 import (
+	"VDController/config"
 	"VDController/database"
 	"VDController/docker"
 	"VDController/kubernetes"
@@ -8,6 +9,7 @@ import (
 	"VDController/terminal"
 	"VDController/web"
 	"VDController/web/models"
+	"fmt"
 	"sync"
 )
 
@@ -28,11 +30,19 @@ func checkStatus() {
 		if err := db.AutoMigrate(&models.StatusInfo{}); err != nil {
 			logger.GlobalLogger.Error("Migrate table failed")
 			panic(err)
-		} else if docker.CheckStatus() && kubernetes.CheckStatus() {
-			logger.GlobalLogger.Info("All components are running")
+		} else if !config.ConfigData.KubeEnable {
+			fmt.Println("⚓️不启用 kubenetes 控制器")
+			if !docker.CheckStatus() {
+				logger.GlobalLogger.Error("Docker are not health")
+			}
+		} else {
+			fmt.Println("⚓️已启用 kubenetes 控制器")
+			if docker.CheckStatus() || kubernetes.CheckStatus() {
+				logger.GlobalLogger.Info("All components are running")
+			}
 		}
 	} else {
-		logger.GlobalLogger.Error("Some components are not running")
+		logger.GlobalLogger.Error("Database components are not health")
 	}
 	web.CheckStatus()
 }

@@ -23,10 +23,11 @@ func CheckStatus() bool {
 		"mysql":   dbconfig.DBAddr != "" && dbconfig.DBUser != "" && dbconfig.DBPass != "" && dbconfig.DBName != "",
 		"default": false,
 	}
-	paramValid := requiredParams[dbconfig.DBType]
-	if !paramValid {
-		logger.GlobalLogger.Error("Missing required database configuration parameters")
-		return false
+	if !requiredParams[dbconfig.DBType] {
+		dbconfig.DBType = "sqlite"
+		dbconfig.DBPath = "data.db"
+		logger.GlobalLogger.Warn("No database configuration file is set up, the default sqlite settings will be used")
+		//logger.GlobalLogger.Error("Missing required database configuration parameters")
 	}
 	return true
 }
@@ -52,7 +53,6 @@ func GetDBConnection() (db *gorm.DB, err error) {
 
 func SaveOrUpdateStatusInfo(info models.StatusInfo) error {
 	db, err := GetDBConnection()
-	db.AutoMigrate(&models.StatusInfo{})
 	if err != nil {
 		return err
 	}
