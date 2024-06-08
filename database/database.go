@@ -27,7 +27,6 @@ func CheckStatus() bool {
 		dbconfig.DBType = "sqlite"
 		dbconfig.DBPath = "data.db"
 		logger.GlobalLogger.Warn("No database configuration file is set up, the default sqlite settings will be used")
-		//logger.GlobalLogger.Error("Missing required database configuration parameters")
 	}
 	return true
 }

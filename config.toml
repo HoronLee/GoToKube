@@ -1,4 +1,4 @@
 WebEnable = true
 ListeningPort = ':1024'
-KubeEnable = true
+KubeEnable = false
 KubeconfigPath = ''

@@ -41,8 +41,11 @@ func CheckStatus() bool {
 		logger.GlobalLogger.Log(logger.ERROR, err.Error())
 		return false
 	} else {
-		logger.GlobalLogger.Log(logger.INFO, "Kubernetes Client Create Success")
-		GetK8sVersion()
+		err = GetK8sVersion()
+		if err != nil {
+			logger.GlobalLogger.Log(logger.ERROR, err.Error())
+			return false
+		}
 		return true
 	}
 }

@@ -34,15 +34,20 @@ func checkStatus() {
 			fmt.Println("⚓️不启用 kubenetes 控制器")
 			if !docker.CheckStatus() {
 				logger.GlobalLogger.Error("Docker are not health")
+				panic("Docker are not health")
 			}
 		} else {
 			fmt.Println("⚓️已启用 kubenetes 控制器")
-			if docker.CheckStatus() || kubernetes.CheckStatus() {
+			if kubernetes.CheckStatus() && docker.CheckStatus() {
 				logger.GlobalLogger.Info("All components are running")
+			} else {
+				logger.GlobalLogger.Error("Some components are not health")
+				panic("Some components are not health")
 			}
 		}
 	} else {
 		logger.GlobalLogger.Error("Database components are not health")
+		panic("Database components are not health")
 	}
 	web.CheckStatus()
 }

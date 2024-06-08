@@ -20,11 +20,12 @@ func GetAllPods() {
 	}
 }
 
-func GetK8sVersion() {
+func GetK8sVersion() error {
 	version, err := kubeClient.Discovery().ServerVersion()
 	if err != nil {
-		panic(err.Error())
+		return err
 	}
 	EnvInfo.KubeVersion = version.String()
 	database.SaveOrUpdateStatusInfo(models.StatusInfo{Component: "Kubernetes", Version: version.String(), Status: "OK"})
+	return nil
 }
