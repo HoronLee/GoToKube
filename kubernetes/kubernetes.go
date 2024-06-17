@@ -41,7 +41,7 @@ func CheckStatus() bool {
 		logger.GlobalLogger.Log(logger.ERROR, err.Error())
 		return false
 	} else {
-		err = GetK8sVersion()
+		err = Getk8sVersion()
 		if err != nil {
 			logger.GlobalLogger.Log(logger.ERROR, err.Error())
 			return false

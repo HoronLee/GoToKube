@@ -69,9 +69,8 @@ func dockerChecks(cli *client.Client) (ifok bool, status string) {
 				ifok, status = true, dstatus+"\n"+"Unable to get Docker Compose version."
 			}
 		}
-		//db.Where(models.StatusInfo{Component: "Docker"}).FirstOrCreate(&models.StatusInfo{}, models.StatusInfo{Component: "Docker", Version: EnvInfo.DockerVersion, Status: "OK"})
 		database.SaveOrUpdateStatusInfo(models.StatusInfo{Component: "Docker", Version: EnvInfo.DockerVersion, Status: "Running"})
-		database.SaveOrUpdateStatusInfo(models.StatusInfo{Component: "DockerCompose", Version: EnvInfo.DockerCVersion, Status: "Running"})
+		database.SaveOrUpdateStatusInfo(models.StatusInfo{Component: "DockerCompose", Version: EnvInfo.DockerCVersion, Status: "OK"})
 		logger.GlobalLogger.Log(logger.INFO, status)
 		return ifok, status
 	}

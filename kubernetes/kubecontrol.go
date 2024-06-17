@@ -5,7 +5,12 @@ import (
 	"VDController/web/models"
 	"context"
 	"fmt"
+	"gorm.io/gorm"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+)
+
+var (
+	db *gorm.DB
 )
 
 func GetAllPods() {
@@ -20,12 +25,16 @@ func GetAllPods() {
 	}
 }
 
-func GetK8sVersion() error {
+func Getk8sVersion() error {
 	version, err := kubeClient.Discovery().ServerVersion()
 	if err != nil {
 		return err
 	}
 	EnvInfo.KubeVersion = version.String()
-	database.SaveOrUpdateStatusInfo(models.StatusInfo{Component: "Kubernetes", Version: version.String(), Status: "OK"})
+	db, _ := database.GetDBConnection()
+	db.Create(&models.StatusInfo{Component: "Kubernetes", Version: "UnKnown", Status: "Running"})
+	var k8sModel models.StatusInfo
+	db.First(&k8sModel, "component = ?", "Kubernetes")
+	db.Model(&k8sModel).Update("version", version.String())
 	return nil
 }
