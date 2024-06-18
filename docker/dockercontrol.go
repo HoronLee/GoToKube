@@ -42,9 +42,9 @@ func Close() error {
 func Dockerls() ([]types.Container, error) {
 	containers, err := dockerClient.ContainerList(context.Background(), container.ListOptions{})
 	if err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, "获取容器失败")
+		logger.GlobalLogger.Log(logger.ERROR, "Failed to get containers")
 	} else {
-		logger.GlobalLogger.Log(logger.INFO, "获取当前容器")
+		logger.GlobalLogger.Log(logger.INFO, "Success to get containers")
 	}
 	return containers, err
 }

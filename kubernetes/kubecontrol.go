@@ -38,3 +38,6 @@ func Getk8sVersion() error {
 	db.Model(&k8sModel).Update("version", version.String())
 	return nil
 }
+
+// TODO: 添加获取 Service
+// TODO: 添加获取 Deployment
