@@ -3,49 +3,49 @@
 </h1>
 
 <p align="center">
-🐳 Manage Containers with Ease (Beta).
+🐳 轻松管理容器 (Beta).
 </p>
 
 <pre align="center">
-Makes it easier and faster to use docker
-🧪 developing
+让你更加方便快捷的使用docker
+🧪 开发中
 </pre>
 
-- **English** | [简体中文](./README.zh-CN.md)
+- [English](./README.en-US.md) | **简体中文**
 
-## TODO:
-- [x] You can view docker information through the console.
-- [x] The console will terminate the application if it detects a Docker exception.
-- [x] Displaying information through the web interface
-- [x] Connect to Kubernetes cluster and show all pods through console.
-- [ ] Multi-database support(SQLite MySQL)
+## TODO：
+- [x] 可以通过控制台查看docker的信息
+- [x] 控制台检测到Docker异常会终止程序
+- [x] 通过 Web 界面展示信息
+- [x] 对接 Kubernetes 集群，可以通过控制台显示所有 Pod
+- [ ] 多数据库支持(SQLite MySQL)
 
-## How to build
+## 构建方法
 
-> Required Docker Client API Version >= 1.45
+> 需要的 Docker Client API Version >= 1.45
 
-1. Go to the project directory and execute `go build`. 2.
-2. Get the `VDController` binary and give it executable permissions `sudo chmod +x VDController`. 3.
-3. Put `VDController` into a separate folder and put it into the project's webSrc folder.
-4. Execute `. /VDController` to start the application
+1. 进入项目目录执行`go build`
+2. 得到`VDController`二进制文件，给予可执行权限`sudo chmod +x VDController`
+3. 将`VDController`放到独立文件夹，并且放入项目的 webSrc 文件夹
+4. 执行`./VDController`即可开启程序
 
-## Configuration files
+## 配置文件
 
-> The configuration file is created in the same directory as the application after the first run and can be changed later.
+> 配置文件在第一次运行后会在程序同级目录生成，随后可自行更改
 
-- `WebEnable = true&false` Whether to automatically enable the web function after starting the program
-- `ListeningPort = '0.0.0.0:8080'` The listening address and port for the web function
-- `KubeEnable = true&false` Whether to automatically enable the Kubernetes function after starting the program
-- `KubeconfigPath = '.kube/config file path'` The configuration file path for the Kubernetes function
-    - If not specified, the default will be `$HOME/.kube/config`
-- `DBType = 'sqlite&mysql'` Database type, defaults to sqlite. Currently, only sqlite and mysql are supported
-- `DBPath = 'data.db'` Database file path, defaults to `data.db` in the current directory of the program
-- `DBAddr = '127.0.0.1:3306'` Database address
-- `DBUser = 'root'` Database username
-- `DBPass = 'password'` Database password
-- `DBName = 'test'` Database name
+- `WebEnable = true&false` 开启程序后是否自动开启网页功能
+- `ListeningPort = '0.0.0.0:8080'` 网页功能的监听地址以及端口
+- `KubeEnable = true&false` 开启程序后是否自动开启 kubernetes 功能
+- `KubeconfigPath = '.kube/config 文件路径'` kubernetes 功能的配置文件路径
+  - 如果不填写此项，则默认会使用 $HOME/.kube/config`''`
+- `DBType = 'sqlite&mysql'` 数据库类型，默认为 sqlite，目前仅支持 sqlite和mysql
+- `DBPath = 'data.db'` 数据库文件路径，默认为程序当前目录的`data.db`
+- `DBAddr = '127.0.0.1:3306'` 数据库地址
+- `DBUser = 'root'` 数据库用户名
+- `DBPass = 'password'` 数据库密码
+- `DBName = 'test'` 数据库名称
 
-Example:
+示例：
 ```toml
 WebEnable = true
 ListeningPort = '127.0.0.1:1024'
@@ -53,20 +53,19 @@ KubeEnable = true
 KubeconfigPath = '/Users/horonlee/Downloads/k8s/config'
 ```
 
-## Web usage
+## 网页端用法
 
-1. `IP:8080` is a default homepage (nothing)
-2. `IP:8080/json/*` returns a variety of json information.
+1. `IP:8080` 是一个默认主页（什么都没有）
+2. `IP:8080/json/*` 返回各种 json 信息
    1. `IP:8080/json/docker` docker
    2. `IP:8080/json/kube` kubernetes
-3. `IP:8080/search?image=$IMAGE_NAME` Returns the running container for the specified image.
+3. `IP:8080/search?image=$IMAGE_NAME` 返回指定镜像对应在运行的容器
 
-## Environment variable
+## 环境变量
+- LOG_DIR 日志文件存放路径`/var/log/vdcontroller`
 
-- LOG_DIR Path to the log file `/var/log/vdcontroller`.
+## 启动参数
 
-## Startup parameters
+支持通过启动参数来配置软件的设置，如：`./VDController -kubeconfig="/home/user/document/k8s/config"
 
-> Support to configure software settings via startup parameters, e.g.: `./VDController -kubeconfig="/home/user/document/k8s/config"
-
-- `-kubeconfig` Kubernetes configuration file path
+- `-kubeconfig` Kubernetes配置文件路径

@@ -17,16 +17,38 @@ var (
 	dbconfig = config.ConfigData
 )
 
-func CheckStatus() bool {
-	requiredParams := map[string]bool{
-		"sqlite":  dbconfig.DBPath != "",
-		"mysql":   dbconfig.DBAddr != "" && dbconfig.DBUser != "" && dbconfig.DBPass != "" && dbconfig.DBName != "",
-		"default": false,
-	}
-	if !requiredParams[dbconfig.DBType] {
+func CheckAndSetDefaultConfig() {
+	// 如果 DBType 未设置，默认使用 sqlite
+	if dbconfig.DBType == "" {
 		dbconfig.DBType = "sqlite"
-		dbconfig.DBPath = "data.db"
-		logger.GlobalLogger.Warn("No database configuration file is set up, the default sqlite settings will be used")
+		logger.GlobalLogger.Warn("Database type is not specified, defaulting to sqlite")
+	}
+	// 对于 SQLite，如果 DBPath 未设置，则设置为当前目录下的 data.db
+	if dbconfig.DBType == "sqlite" && dbconfig.DBPath == "" {
+		dbconfig.DBPath = "./data.db"
+		logger.GlobalLogger.Warn("SQLite database path is not set, defaulting to ./data.db")
+	}
+}
+
+func CheckStatus() bool {
+	CheckAndSetDefaultConfig()
+	switch dbconfig.DBType {
+	case "":
+		logger.GlobalLogger.Warn("Database type is not specified, defaulting to sqlite")
+		fallthrough
+	case "sqlite":
+		if dbconfig.DBPath == "" {
+			logger.GlobalLogger.Error("SQLite database path is not set")
+			return false
+		}
+	case "mysql":
+		if dbconfig.DBAddr == "" || dbconfig.DBUser == "" || dbconfig.DBPass == "" || dbconfig.DBName == "" {
+			logger.GlobalLogger.Error("Missing required MySQL configuration parameters")
+			return false
+		}
+	default:
+		logger.GlobalLogger.Error("Unsupported database type: " + dbconfig.DBType)
+		return false
 	}
 	return true
 }

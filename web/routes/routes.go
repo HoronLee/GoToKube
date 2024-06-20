@@ -6,7 +6,7 @@ import (
 )
 
 func SetupRouter() *gin.Engine {
-	// 开发模式
+	// 开发模式：DebugMode 线上模式：ReleaseMode
 	gin.SetMode(gin.DebugMode)
 	router := gin.Default()
 

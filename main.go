@@ -16,6 +16,7 @@ import (
 func main() {
 	logger.InitGlobalLogger(logger.INFO)
 	checkStatus()
+	fmt.Println(config.ConfigData)
 	// 控制台协程
 	var mainWg sync.WaitGroup
 	mainWg.Add(1)
@@ -41,13 +42,13 @@ func checkStatus() {
 			if kubernetes.CheckStatus() && docker.CheckStatus() {
 				logger.GlobalLogger.Info("All components are running")
 			} else {
-				logger.GlobalLogger.Error("Some components are not health")
-				panic("Some components are not health")
+				logger.GlobalLogger.Error("Kubernetes or Docker are not health")
+				panic("Kubernetes or Docker are not health")
 			}
 		}
 	} else {
-		logger.GlobalLogger.Error("Database components are not health")
-		panic("Database components are not health")
+		logger.GlobalLogger.Error("Database are not health,please check the relevant configuration of the database")
+		panic("Database are not health")
 	}
 	web.CheckStatus()
 }

@@ -14,7 +14,7 @@ type Config struct {
 	KubeconfigPath string `toml:"KubeconfigPath"`
 	DBType         string `toml:"DBType"`
 	DBPath         string `toml:"DBPath"`
-	DBAddr         string `toml:"DBAddress"`
+	DBAddr         string `toml:"DBAddr"`
 	DBUser         string `toml:"DBUser"`
 	DBPass         string `toml:"DBPassword"`
 	DBName         string `toml:"DBName"`
