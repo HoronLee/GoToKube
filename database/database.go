@@ -72,6 +72,7 @@ func GetDBConnection() (db *gorm.DB, err error) {
 	return db, err
 }
 
+// SaveOrUpdateStatusInfo TODO: 优化数据库查询
 func SaveOrUpdateStatusInfo(info models.StatusInfo) error {
 	db, err := GetDBConnection()
 	if err != nil {

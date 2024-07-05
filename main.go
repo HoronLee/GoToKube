@@ -16,7 +16,6 @@ import (
 func main() {
 	logger.InitGlobalLogger(logger.INFO)
 	checkStatus()
-	fmt.Println(config.ConfigData)
 	// 控制台协程
 	var mainWg sync.WaitGroup
 	mainWg.Add(1)

@@ -15,13 +15,13 @@ func Index(c *gin.Context) {
 	})
 }
 
-func Search(c *gin.Context) {
-	imgName, ok := c.GetQuery("image")
+func SearchCtr(c *gin.Context) {
+	ctrName, ok := c.GetQuery("container")
 	outPut := make(map[string]interface{})
 	if !ok {
 		outPut["error"] = "No Such Resource."
 	} else {
-		outPut, _ = docker.DockerlsByImg(imgName)
+		outPut, _ = docker.ContainerLsByImg(ctrName)
 	}
 	c.JSON(http.StatusOK, outPut)
 }

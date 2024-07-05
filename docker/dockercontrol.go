@@ -49,8 +49,8 @@ func Dockerls() ([]types.Container, error) {
 	return containers, err
 }
 
-// DockerlsByImg 通过镜像名获得容器
-func DockerlsByImg(imgName string) (map[string]interface{}, error) {
+// ContainerLsByImg 通过镜像名获得容器
+func ContainerLsByImg(imgName string) (map[string]interface{}, error) {
 	containers, err := Dockerls()
 	if err != nil {
 		return nil, err

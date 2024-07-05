@@ -15,7 +15,7 @@ func SetupRouter() *gin.Engine {
 
 	// 路由设置
 	router.GET("/", controller.Index)
-	router.GET("/search", controller.Search)
+	router.GET("/search", controller.SearchCtr)
 
 	jsonIndex := router.Group("/json")
 	{
