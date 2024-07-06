@@ -1,9 +1,7 @@
 package docker
 
 import (
-	"VDController/database"
 	"VDController/logger"
-	"VDController/web/models"
 	"context"
 	"fmt"
 	"os/exec"
@@ -69,8 +67,6 @@ func dockerChecks(cli *client.Client) (ifok bool, status string) {
 				ifok, status = true, dstatus+"\n"+"Unable to get Docker Compose version."
 			}
 		}
-		database.SaveOrUpdateStatusInfo(models.StatusInfo{Component: "Docker", Version: EnvInfo.DockerVersion, Status: "Running"})
-		database.SaveOrUpdateStatusInfo(models.StatusInfo{Component: "DockerCompose", Version: EnvInfo.DockerCVersion, Status: "OK"})
 		logger.GlobalLogger.Log(logger.INFO, status)
 		return ifok, status
 	}

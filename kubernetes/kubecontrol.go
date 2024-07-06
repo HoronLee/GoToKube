@@ -1,8 +1,6 @@
 package kubernetes
 
 import (
-	"VDController/database"
-	"VDController/web/models"
 	"context"
 	"fmt"
 	"gorm.io/gorm"
@@ -31,11 +29,6 @@ func Getk8sVersion() error {
 		return err
 	}
 	EnvInfo.KubeVersion = version.String()
-	db, _ := database.GetDBConnection()
-	db.Create(&models.StatusInfo{Component: "Kubernetes", Version: "UnKnown", Status: "Running"})
-	var k8sModel models.StatusInfo
-	db.First(&k8sModel, "component = ?", "Kubernetes")
-	db.Model(&k8sModel).Update("version", version.String())
 	return nil
 }
 

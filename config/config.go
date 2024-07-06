@@ -10,6 +10,7 @@ import (
 type Config struct {
 	WebEnable      bool   `toml:"WebEnable"`
 	ListeningAddr  string `toml:"ListeningPort"`
+	TermEnable     bool   `toml:"TermEnable"`
 	KubeEnable     bool   `toml:"KubeEnable"`
 	KubeconfigPath string `toml:"KubeconfigPath"`
 	DBType         string `toml:"DBType"`
@@ -41,6 +42,7 @@ func createDefaultConfig(path string) {
 	config := Config{
 		WebEnable:      false,
 		ListeningAddr:  ":8080",
+		TermEnable:     false,
 		KubeEnable:     false,
 		KubeconfigPath: "",
 		DBType:         "sqlite",

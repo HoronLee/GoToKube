@@ -3,8 +3,6 @@ package database
 import (
 	"VDController/config"
 	"VDController/logger"
-	"VDController/web/models"
-	"errors"
 	"gorm.io/gorm"
 )
 
@@ -70,25 +68,4 @@ func GetDBConnection() (db *gorm.DB, err error) {
 		panic(err)
 	}
 	return db, err
-}
-
-// SaveOrUpdateStatusInfo TODO: 优化数据库查询
-func SaveOrUpdateStatusInfo(info models.StatusInfo) error {
-	db, err := GetDBConnection()
-	if err != nil {
-		return err
-	}
-	// 查询是否存在相同记录
-	var existingInfo models.StatusInfo
-	err = db.Where("component = ?", info.Component).First(&existingInfo).Error
-	if err == nil { // 记录已存在，进行更新
-		existingInfo.Version = info.Version
-		existingInfo.Status = info.Status
-		err = db.Save(&existingInfo).Error
-	} else if errors.Is(err, gorm.ErrRecordNotFound) { // 记录不存在，创建新记录
-		err = db.Create(&info).Error
-	} else {
-		return err
-	}
-	return err
 }

@@ -3,7 +3,6 @@ package terminal
 import (
 	"VDController/docker"
 	"VDController/kubernetes"
-	"VDController/web"
 	"bufio"
 	"fmt"
 	"os"
@@ -70,11 +69,7 @@ func Terminal(wg *sync.WaitGroup) {
 				subMenu: []*Menu{
 					parentMenu,
 					{
-						name: "启动网页端",
-						action: func() {
-							go web.StartWeb()
-							fmt.Println("✅启动网页端成功")
-						},
+						name: "QAQ",
 					},
 					exitMenu,
 				},

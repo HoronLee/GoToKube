@@ -13,14 +13,11 @@ import (
 	"sync"
 )
 
+var mainWg sync.WaitGroup
+
 func main() {
 	logger.InitGlobalLogger(logger.INFO)
 	checkStatus()
-	// 控制台协程
-	var mainWg sync.WaitGroup
-	mainWg.Add(1)
-	go terminal.Terminal(&mainWg)
-	mainWg.Wait()
 }
 
 func checkStatus() {
@@ -49,5 +46,11 @@ func checkStatus() {
 		logger.GlobalLogger.Error("Database are not health,please check the relevant configuration of the database")
 		panic("Database are not health")
 	}
-	web.CheckStatus()
+	if config.ConfigData.TermEnable {
+		mainWg.Add(1)
+		go terminal.Terminal(&mainWg)
+	}
+	mainWg.Add(1)
+	web.CheckStatus(&mainWg)
+	mainWg.Wait()
 }
