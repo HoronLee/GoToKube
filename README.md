@@ -18,7 +18,7 @@
 - [x] 控制台检测到Docker异常会终止程序
 - [x] 通过 Web 界面展示信息
 - [x] 对接 Kubernetes 集群，可以通过控制台显示所有 Pod
-- [ ] 多数据库支持(SQLite MySQL)
+- [x] 多数据库支持(SQLite MySQL)
 
 ## 构建方法
 
@@ -55,11 +55,23 @@ KubeconfigPath = '/Users/horonlee/Downloads/k8s/config'
 
 ## 网页端用法
 
-1. `IP:8080` 是一个默认主页（什么都没有）
-2. `IP:8080/json/*` 返回各种 json 信息
-   1. `IP:8080/json/docker` docker
-   2. `IP:8080/json/kube` kubernetes
-3. `IP:8080/search?image=$IMAGE_NAME` 返回指定镜像对应在运行的容器
+**Docker** 操作
+
+   > URL 的前缀都是$IP/docker，后面跟随下方的地址
+
+- `/search?ctr=$ImageName` 根据镜像名查看所有使用该镜像创建的Docker容器
+
+**Kubernetes** 操作
+
+   > URL 的前缀都是$IP/kube，后面跟随下方的地址
+
+- `/deployments/$Namespace` 获得该命名空间下的所有 Deployment
+- `/deployment/$Namespace/$DeployName` 获得该命名空间该 Deployment 的详细信息
+- `/services/$Namespace` 获得该命名空间下的所有 Service
+- `/pods/$Namespace` 获得该命名空间下的所有 Pod
+  - `/pod/$Namespace/$PodName` 获得该 Pod 的详细信息 
+- `/namespaces` 获得所有命名空间
+
 
 ## 环境变量
 - LOG_DIR 日志文件存放路径`/var/log/vdcontroller`

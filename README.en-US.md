@@ -55,12 +55,23 @@ KubeconfigPath = '/Users/horonlee/Downloads/k8s/config'
 
 ## Web usage
 
-1. `IP:8080` is a default homepage (nothing)
-2. `IP:8080/json/*` returns a variety of json information.
-   1. `IP:8080/json/docker` docker
-   2. `IP:8080/json/kube` kubernetes
-3. `IP:8080/search?image=$IMAGE_NAME` Returns the running container for the specified image.
+**Docker Operations**
 
+   > The URL prefix is $IP/docker, followed by the addresses below.
+
+- `/search?ctr=$ImageName` View all Docker containers created with the specified image name.
+
+**Kubernetes Operations**
+
+   > The URL prefix is $IP/kube, followed by the addresses below.
+
+- `/deployments/$Namespace` Get all Deployments in the specified namespace.
+- `/deployment/$Namespace/$DeployName` Get detailed information about the specified Deployment in the specified namespace.
+- `/services/$Namespace` Get all Services in the specified namespace.
+- `/pods/$Namespace` Get all Pods in the specified namespace.
+    - `/pod/$Namespace/$PodName` Get detailed information about the specified Pod.
+- `/namespaces` Get all namespaces.
+- 
 ## Environment variable
 
 - LOG_DIR Path to the log file `/var/log/vdcontroller`.

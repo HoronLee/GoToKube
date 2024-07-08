@@ -3,6 +3,7 @@ package docker
 import (
 	"VDController/logger"
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/docker/docker/api/types"
@@ -38,8 +39,8 @@ func Close() error {
 	return dockerClient.Close()
 }
 
-// Dockerls 获取当前容器
-func Dockerls() ([]types.Container, error) {
+// ContainerLs 获取当前容器
+func ContainerLs() ([]types.Container, error) {
 	containers, err := dockerClient.ContainerList(context.Background(), container.ListOptions{})
 	if err != nil {
 		logger.GlobalLogger.Log(logger.ERROR, "Failed to get containers")
@@ -50,21 +51,19 @@ func Dockerls() ([]types.Container, error) {
 }
 
 // ContainerLsByImg 通过镜像名获得容器
-func ContainerLsByImg(imgName string) (map[string]interface{}, error) {
-	containers, err := Dockerls()
+func ContainerLsByImg(imgName string) ([]types.Container, error) {
+	containers, err := ContainerLs()
 	if err != nil {
 		return nil, err
 	}
-
-	output := make(map[string]interface{})
+	var output []types.Container
 	for _, ctr := range containers {
 		if strings.Contains(ctr.Image, imgName) {
-			output[ctr.Image] = ctr
+			output = append(output, ctr)
 		}
 	}
-
 	if len(output) == 0 {
-		output["WARN"] = "No Container matches this condition."
+		return output, fmt.Errorf("no container matches this condition")
 	}
 	return output, nil
 }
