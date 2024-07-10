@@ -13,12 +13,13 @@
 
 - [English](./README.en-US.md) | **简体中文**
 
-## TODO：
+## 主要功能：
 - [x] 可以通过控制台查看docker的信息
 - [x] 控制台检测到Docker异常会终止程序
 - [x] 通过 Web 界面展示信息
 - [x] 对接 Kubernetes 集群，可以通过控制台显示所有 Pod
 - [x] 多数据库支持(SQLite MySQL)
+- [x] 通过各种请求来使用 yaml 文件对 kubernetes 集群内的资源进行操控
 
 ## 构建方法
 
@@ -46,6 +47,7 @@
 - `DBName = 'test'` 数据库名称
 
 示例：
+
 ```toml
 WebEnable = true
 ListeningPort = '127.0.0.1:1024'
@@ -65,12 +67,21 @@ KubeconfigPath = '/Users/horonlee/Downloads/k8s/config'
 
    > URL 的前缀都是$IP/kube，后面跟随下方的地址
 
-- `/deployments/$Namespace` 获得该命名空间下的所有 Deployment
-- `/deployment/$Namespace/$DeployName` 获得该命名空间该 Deployment 的详细信息
-- `/services/$Namespace` 获得该命名空间下的所有 Service
-- `/pods/$Namespace` 获得该命名空间下的所有 Pod
-  - `/pod/$Namespace/$PodName` 获得该 Pod 的详细信息 
-- `/namespaces` 获得所有命名空间
+- GET `/deployments/$Namespace` 获得该命名空间下的所有 Deployment
+- GET `/deployment/$Namespace/$DeployName` 获得该命名空间该 Deployment 的详细信息
+- GET `/services/$Namespace` 获得该命名空间下的所有 Service
+- GET `/pods/$Namespace` 获得该命名空间下的所有 Pod
+  - GET `/pod/$Namespace/$PodName` 获得该 Pod 的详细信息 
+- GET `/namespaces` 获得所有命名空间
+- POST `/uploadYaml` 上传 yaml 文件
+  - 用法:
+    ```bash
+    curl -X POST http://127.0.0.1:1024/kube/uploadYaml \
+    -F "file=@/Users/horonlee/code/kubernetes/nginx.yaml" \
+    -H "Content-Type: multipart/form-data"
+    ```
+- GET `/listYaml` 获得所有已上传的 yaml 文件
+- DELETE `/deleteYaml/$YamlName` 删除 yaml 文件****
 
 
 ## 环境变量

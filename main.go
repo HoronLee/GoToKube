@@ -16,7 +16,10 @@ import (
 var mainWg sync.WaitGroup
 
 func main() {
-	logger.InitGlobalLogger(logger.INFO)
+	err := logger.InitGlobalLogger(logger.INFO)
+	if err != nil {
+		return
+	}
 	checkStatus()
 }
 

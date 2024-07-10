@@ -6,3 +6,4 @@ Dockerfile
 er.name
 config.toml
 data.db
+/uploads

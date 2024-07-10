@@ -4,6 +4,7 @@ import (
 	"VDController/config"
 	"VDController/logger"
 	"flag"
+	"k8s.io/client-go/dynamic"
 	"path/filepath"
 
 	"k8s.io/client-go/kubernetes"
@@ -12,8 +13,9 @@ import (
 )
 
 var (
-	kubeClient *kubernetes.Clientset
-	EnvInfo    = Info{}
+	kubeClient    *kubernetes.Clientset
+	dynamicClient dynamic.Interface
+	EnvInfo       = Info{}
 )
 
 type Info struct {
@@ -37,6 +39,7 @@ func CheckStatus() bool {
 	}
 	// 创建 kubernetes 客户端
 	kubeClient, err = kubernetes.NewForConfig(kubeConfig)
+	dynamicClient, err = dynamic.NewForConfig(kubeConfig)
 	if err != nil {
 		logger.GlobalLogger.Log(logger.ERROR, err.Error())
 		return false

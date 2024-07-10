@@ -22,6 +22,9 @@ func SetupRouter() *gin.Engine {
 		kube.GET("/pods/:namespace", controller.GetPods)
 		kube.GET("/pod/:namespace/:name", controller.GetPod)
 		kube.GET("/namespaces", controller.GetNameSpaces)
+		kube.POST("/uploadYaml", controller.UploadYaml)
+		kube.DELETE("/deleteYaml/:file", controller.DeleteYaml)
+		kube.GET("/listYaml", controller.ListYamlFiles)
 	}
 	docker := router.Group("/docker")
 	{
