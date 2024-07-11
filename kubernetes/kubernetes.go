@@ -1,8 +1,8 @@
 package kubernetes
 
 import (
-	"VDController/config"
-	"VDController/logger"
+	"GoToKube/config"
+	"GoToKube/logger"
 	"flag"
 	"k8s.io/client-go/dynamic"
 	"path/filepath"

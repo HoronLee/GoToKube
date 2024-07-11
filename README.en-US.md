@@ -62,6 +62,15 @@ KubeconfigPath = '/Users/horonlee/Downloads/k8s/config'
    > The URL prefix is $IP/docker, followed by the addresses below.
 
 - `/search?ctr=$ImageName` View all Docker containers created with the specified image name.
+- GET `/images` Get all image
+- POST `/uploadImage` upload image
+  - Useage:
+    ```bash
+    curl -X POST http://127.0.0.1:1024/docker/uploadImage \
+    -F "file=@/Users/horonlee/code/kubernetes/nginx.tar.gz" \
+    -H "Content-Type: multipart/form-data"
+    ```
+- DELETE `/images/:id` To delete a image, need to provide the full imagge id
 
 **Kubernetes Operations**
 

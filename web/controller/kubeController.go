@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"VDController/kubernetes"
-	"VDController/logger"
+	"GoToKube/kubernetes"
+	"GoToKube/logger"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -85,7 +85,7 @@ func UploadYaml(c *gin.Context) {
 		return
 	}
 	logger.GlobalLogger.Info("upload file: " + file.Filename)
-	uploadDir := "./uploads"
+	uploadDir := "./uploads/yaml"
 	dst := uploadDir + "/" + file.Filename
 	// 目录不存在则新建
 	if _, err := os.Stat(uploadDir); os.IsNotExist(err) {

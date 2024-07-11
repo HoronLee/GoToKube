@@ -1,7 +1,7 @@
 logs/
 .idea/
-VDController
-/VDController.exe
+GoToKube
+/GoToKube.exe
 Dockerfile
 er.name
 config.toml

@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"VDController/web/controller"
+	"GoToKube/web/controller"
 	"github.com/gin-gonic/gin"
 )
 
@@ -38,4 +38,7 @@ func registerDockerRoutes(router *gin.Engine) {
 	docker := router.Group("/docker")
 	docker.GET("/", controller.DockerJson)
 	docker.GET("/search", controller.SearchCtr)
+	docker.GET("/images", controller.GetImages)
+	docker.POST("/uploadImage", controller.UploadImage)
+	docker.DELETE("/images/:id", controller.DeleteImage)
 }

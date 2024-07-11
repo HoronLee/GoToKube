@@ -1,9 +1,9 @@
 package web
 
 import (
-	"VDController/config"
-	"VDController/logger"
-	"VDController/web/routes"
+	"GoToKube/config"
+	"GoToKube/logger"
+	"GoToKube/web/routes"
 	"fmt"
 
 	"sync"

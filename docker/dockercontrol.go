@@ -1,9 +1,12 @@
 package docker
 
 import (
-	"VDController/logger"
+	"GoToKube/logger"
 	"context"
 	"fmt"
+	"github.com/docker/docker/api/types/image"
+	"io"
+	"os"
 	"strings"
 
 	"github.com/docker/docker/api/types"
@@ -39,8 +42,8 @@ func Close() error {
 	return dockerClient.Close()
 }
 
-// ContainerLs 获取当前容器
-func ContainerLs() ([]types.Container, error) {
+// GetCtr 获取当前容器
+func GetCtr() ([]types.Container, error) {
 	containers, err := dockerClient.ContainerList(context.Background(), container.ListOptions{})
 	if err != nil {
 		logger.GlobalLogger.Log(logger.ERROR, "Failed to get containers")
@@ -50,9 +53,9 @@ func ContainerLs() ([]types.Container, error) {
 	return containers, err
 }
 
-// ContainerLsByImg 通过镜像名获得容器
-func ContainerLsByImg(imgName string) ([]types.Container, error) {
-	containers, err := ContainerLs()
+// GetCtrByImg 通过镜像名获得容器
+func GetCtrByImg(imgName string) ([]types.Container, error) {
+	containers, err := GetCtr()
 	if err != nil {
 		return nil, err
 	}
@@ -66,4 +69,52 @@ func ContainerLsByImg(imgName string) ([]types.Container, error) {
 		return output, fmt.Errorf("no container matches this condition")
 	}
 	return output, nil
+}
+
+// GetImages 获取当前的 Docker 镜像列表
+func GetImages() ([]image.Summary, error) {
+	images, err := dockerClient.ImageList(context.Background(), image.ListOptions{})
+	if err != nil {
+		logger.GlobalLogger.Log(logger.ERROR, "Failed to get images")
+	} else {
+		logger.GlobalLogger.Log(logger.INFO, "Success to get images")
+	}
+	return images, err
+}
+
+// UploadImage 上传镜像
+func UploadImage(filePath string) error {
+	// 打开镜像文件
+	file, err := os.Open(filePath)
+	if err != nil {
+		logger.GlobalLogger.Log(logger.ERROR, fmt.Sprintf("Failed to open image file: %s", err))
+		return err
+	}
+	defer file.Close()
+	// 上传镜像
+	response, err := dockerClient.ImageLoad(context.Background(), file, true)
+	if err != nil {
+		logger.GlobalLogger.Log(logger.ERROR, fmt.Sprintf("Failed to load image: %s", err))
+		return err
+	}
+	defer response.Body.Close()
+	// 读取上传响应
+	_, err = io.Copy(os.Stdout, response.Body)
+	if err != nil {
+		logger.GlobalLogger.Log(logger.ERROR, fmt.Sprintf("Failed to read response: %s", err))
+		return err
+	}
+	logger.GlobalLogger.Log(logger.INFO, "Image was successfully uploaded")
+	return nil
+}
+
+// DeleteImage 删除镜像
+func DeleteImage(imageID string) error {
+	_, err := dockerClient.ImageRemove(context.Background(), imageID, types.ImageRemoveOptions{Force: true, PruneChildren: true})
+	if err != nil {
+		logger.GlobalLogger.Log(logger.ERROR, "Failed to delete image")
+		return err
+	}
+	logger.GlobalLogger.Log(logger.INFO, "Image deleted successfully")
+	return nil
 }

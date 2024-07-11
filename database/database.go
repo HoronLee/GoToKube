@@ -1,8 +1,8 @@
 package database
 
 import (
-	"VDController/config"
-	"VDController/logger"
+	"GoToKube/config"
+	"GoToKube/logger"
 	"gorm.io/gorm"
 )
 

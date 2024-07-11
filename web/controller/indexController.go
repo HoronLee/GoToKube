@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"VDController/docker"
-	"VDController/kubernetes"
+	"GoToKube/docker"
+	"GoToKube/kubernetes"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

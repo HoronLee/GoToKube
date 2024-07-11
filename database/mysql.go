@@ -1,7 +1,7 @@
 package database
 
 import (
-	"VDController/logger"
+	"GoToKube/logger"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

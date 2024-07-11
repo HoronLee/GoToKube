@@ -61,7 +61,16 @@ KubeconfigPath = '/Users/horonlee/Downloads/k8s/config'
 
    > URL 的前缀都是$IP/docker，后面跟随下方的地址
 
-- `/search?ctr=$ImageName` 根据镜像名查看所有使用该镜像创建的Docker容器
+- GET `/search?ctr=$ImageName` 根据镜像名查看所有使用该镜像创建的Docker容器
+- GET `/images` 获得所有镜像
+- POST `/uploadImage` 上传镜像
+  - 用法:
+    ```bash
+    curl -X POST http://127.0.0.1:1024/docker/uploadImage \
+    -F "file=@/Users/horonlee/code/kubernetes/nginx.tar.gz" \
+    -H "Content-Type: multipart/form-data"
+    ```
+- DELETE `/images/:id` 删除镜像，需要提供完整的镜像 ID
 
 **Kubernetes** 操作
 

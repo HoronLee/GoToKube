@@ -1,7 +1,7 @@
 package docker
 
 import (
-	"VDController/logger"
+	"GoToKube/logger"
 	"context"
 	"fmt"
 	"os/exec"

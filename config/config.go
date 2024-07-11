@@ -1,7 +1,7 @@
 package config
 
 import (
-	"VDController/logger"
+	"GoToKube/logger"
 	"os"
 
 	"github.com/pelletier/go-toml/v2"

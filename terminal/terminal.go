@@ -1,10 +1,11 @@
 package terminal
 
 import (
-	"VDController/docker"
-	"VDController/kubernetes"
+	"GoToKube/docker"
+	"GoToKube/kubernetes"
 	"bufio"
 	"fmt"
+	"github.com/dustin/go-humanize"
 	"os"
 	"sync"
 )
@@ -37,11 +38,20 @@ func Terminal(wg *sync.WaitGroup) {
 				subMenu: []*Menu{
 					parentMenu,
 					{
+						name: "🖼️查看镜像列表",
+						action: func() {
+							returnValue, _ := docker.GetImages()
+							for _, img := range returnValue {
+								fmt.Printf("%s %s %s\n", img.ID[:12], img.RepoTags, humanize.IBytes(uint64(img.Size)))
+							}
+						},
+					},
+					{
 						name: "🔋查看正在运行的容器",
 						action: func() {
-							returnValue, _ := docker.ContainerLs()
+							returnValue, _ := docker.GetCtr()
 							for _, ctr := range returnValue {
-								fmt.Printf("%s %s %s\n", ctr.ID[:3], ctr.Image, ctr.Status)
+								fmt.Printf("%s %s %v\n", ctr.ID[:3], ctr.Image, ctr.Status)
 							}
 						},
 					},

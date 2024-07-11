@@ -1,14 +1,14 @@
 package main
 
 import (
-	"VDController/config"
-	"VDController/database"
-	"VDController/docker"
-	"VDController/kubernetes"
-	"VDController/logger"
-	"VDController/terminal"
-	"VDController/web"
-	"VDController/web/models"
+	"GoToKube/config"
+	"GoToKube/database"
+	"GoToKube/docker"
+	"GoToKube/kubernetes"
+	"GoToKube/logger"
+	"GoToKube/terminal"
+	"GoToKube/web"
+	"GoToKube/web/models"
 	"fmt"
 	"sync"
 )
