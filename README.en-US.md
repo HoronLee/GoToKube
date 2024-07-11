@@ -1,13 +1,13 @@
 <h1 align="center">
-<a href="https://blog.horonlee.com">Visual Docker</a>
+<a href="https://blog.horonlee.com">GoToKube</a>
 </h1>
 
 <p align="center">
-🐳 Manage Containers with Ease (Beta).
+🐳 Manage Kubernetes Cluster with Ease (Beta).
 </p>
 
 <pre align="center">
-Makes it easier and faster to use docker
+Makes it easier and faster to use Kubernetes
 🧪 developing
 </pre>
 

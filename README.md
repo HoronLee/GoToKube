@@ -1,13 +1,13 @@
 <h1 align="center">
-<a href="https://blog.horonlee.com">Visual Docker</a>
+<a href="https://blog.horonlee.com">GoToKube</a>
 </h1>
 
 <p align="center">
-🐳 轻松管理容器 (Beta).
+🐳 轻松管理 Kubernetes 集群 (Beta).
 </p>
 
 <pre align="center">
-让你更加方便快捷的使用docker
+让你更加方便快捷的使用 Kubernetes
 🧪 开发中
 </pre>
 
@@ -81,7 +81,7 @@ KubeconfigPath = '/Users/horonlee/Downloads/k8s/config'
     -H "Content-Type: multipart/form-data"
     ```
 - GET `/listYaml` 获得所有已上传的 yaml 文件
-- DELETE `/deleteYaml/$YamlName` 删除 yaml 文件****
+- DELETE `/deleteYaml/$YamlName` 删除 yaml 文件
 
 
 ## 环境变量

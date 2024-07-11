@@ -156,7 +156,6 @@ func DeleteYAML(filePath string) error {
 		return fmt.Errorf("failed to open file: %v", err)
 	}
 	defer file.Close()
-
 	decoder := yaml.NewYAMLOrJSONDecoder(file, 4096)
 	for {
 		var u unstructured.Unstructured
@@ -166,26 +165,21 @@ func DeleteYAML(filePath string) error {
 			}
 			return fmt.Errorf("failed to decode YAML: %v", err)
 		}
-
 		gvk := u.GroupVersionKind()
 		resource := schema.GroupVersionResource{
 			Group:    gvk.Group,
 			Version:  gvk.Version,
 			Resource: strings.ToLower(gvk.Kind) + "s",
 		}
-
 		namespace := u.GetNamespace()
 		if namespace == "" {
 			namespace = "default"
 		}
-
 		resourceClient := dynamicClient.Resource(resource).Namespace(namespace)
-
 		err = resourceClient.Delete(context.TODO(), u.GetName(), metav1.DeleteOptions{})
 		if err != nil {
 			return fmt.Errorf("delete failed: %v", err)
 		}
 	}
-
 	return nil
 }

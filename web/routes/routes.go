@@ -13,23 +13,29 @@ func SetupRouter() *gin.Engine {
 	router.LoadHTMLGlob("webSrc/template/*")
 	// 路由设置
 	router.GET("/", controller.Index)
-	kube := router.Group("/kube")
-	{
-		kube.GET("/", controller.KubeJson)
-		kube.GET("/deployments/:namespace", controller.GetDeployments)
-		kube.GET("/deployment/:namespace/:name", controller.GetDeployment)
-		kube.GET("/services/:namespace", controller.GetServices)
-		kube.GET("/pods/:namespace", controller.GetPods)
-		kube.GET("/pod/:namespace/:name", controller.GetPod)
-		kube.GET("/namespaces", controller.GetNameSpaces)
-		kube.POST("/uploadYaml", controller.UploadYaml)
-		kube.DELETE("/deleteYaml/:file", controller.DeleteYaml)
-		kube.GET("/listYaml", controller.ListYamlFiles)
-	}
-	docker := router.Group("/docker")
-	{
-		docker.GET("/", controller.DockerJson)
-		docker.GET("/search", controller.SearchCtr)
-	}
+	registerKubeRoutes(router)
+	registerDockerRoutes(router)
 	return router
+}
+
+// registerKubeRoutes groups and registers Kube related routes.
+func registerKubeRoutes(router *gin.Engine) {
+	kube := router.Group("/kube")
+	kube.GET("/", controller.KubeJson)
+	kube.GET("/deployments/:namespace", controller.GetDeployments)
+	kube.GET("/deployment/:namespace/:name", controller.GetDeployment)
+	kube.GET("/services/:namespace", controller.GetServices)
+	kube.GET("/pods/:namespace", controller.GetPods)
+	kube.GET("/pod/:namespace/:name", controller.GetPod)
+	kube.GET("/namespaces", controller.GetNameSpaces)
+	kube.POST("/uploadYaml", controller.UploadYaml)
+	kube.DELETE("/deleteYaml/:file", controller.DeleteYaml)
+	kube.GET("/listYaml", controller.ListYamlFiles)
+}
+
+// registerDockerRoutes groups and registers Docker related routes.
+func registerDockerRoutes(router *gin.Engine) {
+	docker := router.Group("/docker")
+	docker.GET("/", controller.DockerJson)
+	docker.GET("/search", controller.SearchCtr)
 }
