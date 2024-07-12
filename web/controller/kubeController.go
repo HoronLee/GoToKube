@@ -156,14 +156,27 @@ func DeleteYaml(c *gin.Context) {
 }
 
 func ListYamlFiles(c *gin.Context) {
-	files, err := os.ReadDir("./uploads/yaml")
+	uploadDir := "./uploads/yaml"
+	// 检查目录是否存在
+	if _, err := os.Stat(uploadDir); os.IsNotExist(err) {
+		// 目录不存在则新建
+		if err := os.MkdirAll(uploadDir, 0755); err != nil {
+			c.String(http.StatusInternalServerError, fmt.Sprintf("failed to create directory: %s", err.Error()))
+			return
+		}
+	}
+
+	// 读取目录内容
+	files, err := os.ReadDir(uploadDir)
 	if err != nil {
 		c.String(http.StatusInternalServerError, fmt.Sprintf("read dir err: %s", err.Error()))
 		return
 	}
+
 	var fileNames []string
 	for _, file := range files {
 		fileNames = append(fileNames, file.Name())
 	}
+
 	c.JSON(http.StatusOK, fileNames)
 }

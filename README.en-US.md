@@ -14,12 +14,10 @@ Makes it easier and faster to use Kubernetes
 - **English** | [简体中文](./README.md)
 
 ## Key Features:
-- [x] You can view docker information through the console.
-- [x] The console will terminate the application if it detects a Docker exception.
-- [x] Displaying information through the web interface
-- [x] Connect to Kubernetes cluster and show all pods through console.
-- [x] Multi-database support(SQLite MySQL)
-- [x] The YAML file is used to manage resources within a Kubernetes cluster through various requests.
+- [x] Ability to view Docker and Kubernetes information via the console
+- [x] Multiple database support (SQLite MySQL).
+- [x] Manipulate resources within a kubernetes cluster through various requests using yaml files.
+- [x] Querying, creating and deleting Docker containers
 
 ## How to build
 
@@ -56,40 +54,7 @@ KubeconfigPath = '/Users/horonlee/Downloads/k8s/config'
 
 ## Web usage
 
-**Docker Operations**
-
-   > The URL prefix is $IP/docker, followed by the addresses below.
-
-- `/search?ctr=$ImageName` View all Docker containers created with the specified image name.
-- GET `/images` Get all image
-- POST `/uploadImage` upload image
-  - Useage:
-    ```bash
-    curl -X POST http://127.0.0.1:1024/docker/uploadImage \
-    -F "file=@/Users/horonlee/code/kubernetes/nginx.tar.gz" \
-    -H "Content-Type: multipart/form-data"
-    ```
-- DELETE `/images/:id` To delete a image, need to provide the full imagge id
-
-**Kubernetes Operations**
-
-   > The URL prefix is $IP/kube, followed by the addresses below.
-
-- GET `/deployments/$Namespace` Get all Deployments in the specified namespace.
-- GET `/deployment/$Namespace/$DeployName` Get detailed information about the specified Deployment in the specified namespace.
-- GET `/services/$Namespace` Get all Services in the specified namespace.
-- GET `/pods/$Namespace` Get all Pods in the specified namespace.
-    - `/pod/$Namespace/$PodName` Get detailed information about the specified Pod.
-- GET `/namespaces` Get all namespaces.
-- POST `/uploadYaml` to upload a YAML file
-  - Usage:
-    ```bash
-    curl -X POST http://127.0.0.1:1024/kube/uploadYaml \
-    -F "file=@/Users/horonlee/code/kubernetes/nginx.yaml" \
-    -H "Content-Type: multipart/form-data"
-    ```
-- GET `/listYaml` to get all uploaded YAML files
-- DELETE `/deleteYaml/$YamlName` to delete a YAML file
+Most of the software's features are provided by the API, the best way to get started is to check out the API documentation.: https://documenter.getpostman.com/view/34220703/2sA3e5d86S
 
 ## Environment variable
 

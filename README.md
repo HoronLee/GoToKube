@@ -14,12 +14,10 @@
 - [English](./README.en-US.md) | **简体中文**
 
 ## 主要功能：
-- [x] 可以通过控制台查看docker的信息
-- [x] 控制台检测到Docker异常会终止程序
-- [x] 通过 Web 界面展示信息
-- [x] 对接 Kubernetes 集群，可以通过控制台显示所有 Pod
+- [x] 可以通过控制台查看 Docker 和 Kubernetes 的信息
 - [x] 多数据库支持(SQLite MySQL)
 - [x] 通过各种请求来使用 yaml 文件对 kubernetes 集群内的资源进行操控
+- [x] 查询、创建和删除 Docker 容器
 
 ## 构建方法
 
@@ -56,9 +54,10 @@ KubeconfigPath = '/Users/horonlee/Downloads/k8s/config'
 
 ## 网页端用法
 
+本软件大多功能由 API 提供，最好的方式是前往查看 API 文档：https://documenter.getpostman.com/view/34220703/2sA3e5d86S
 **Docker** 操作
 
-   > URL 的前缀都是$IP/docker，后面跟随下方的地址
+> URL 的前缀都是$IP/docker，后面跟随下方的地址
 
 - GET `/search?ctr=$ImageName` 根据镜像名查看所有使用该镜像创建的Docker容器
 - GET `/images` 获得所有镜像
@@ -70,16 +69,33 @@ KubeconfigPath = '/Users/horonlee/Downloads/k8s/config'
     -H "Content-Type: multipart/form-data"
     ```
 - DELETE `/images/:id` 删除镜像，需要提供完整的镜像 ID
+- POST `/ctr/create` 创建容器
+  - 用法:
+    ```bash
+    curl --location '127.0.0.1:1024/docker/ctr/create' \
+    --header 'Content-Type: application/json' \
+    --data '{
+      "imageName": "nginx:stable-perl",
+      "containerName": "test_nginx_container",
+      "portBindings": {
+        "8080": "80/tcp"
+      },
+      "volumes": {
+        "/Users/horonlee/code/kubernetes/nginx/www": "/usr/share/nginx/html"
+      }
+    }'
+    ```
+- DELETE `/ctr/delete/:id` 删除容器，需要提供完整的容器 ID
 
 **Kubernetes** 操作
 
-   > URL 的前缀都是$IP/kube，后面跟随下方的地址
+> URL 的前缀都是$IP/kube，后面跟随下方的地址
 
 - GET `/deployments/$Namespace` 获得该命名空间下的所有 Deployment
 - GET `/deployment/$Namespace/$DeployName` 获得该命名空间该 Deployment 的详细信息
 - GET `/services/$Namespace` 获得该命名空间下的所有 Service
 - GET `/pods/$Namespace` 获得该命名空间下的所有 Pod
-  - GET `/pod/$Namespace/$PodName` 获得该 Pod 的详细信息 
+  - GET `/pod/$Namespace/$PodName` 获得该 Pod 的详细信息
 - GET `/namespaces` 获得所有命名空间
 - POST `/uploadYaml` 上传 yaml 文件
   - 用法:
@@ -90,7 +106,6 @@ KubeconfigPath = '/Users/horonlee/Downloads/k8s/config'
     ```
 - GET `/listYaml` 获得所有已上传的 yaml 文件
 - DELETE `/deleteYaml/$YamlName` 删除 yaml 文件
-
 
 ## 环境变量
 - LOG_DIR 日志文件存放路径`/var/log/vdcontroller`

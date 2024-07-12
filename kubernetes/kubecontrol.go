@@ -4,7 +4,6 @@ import (
 	"GoToKube/logger"
 	"context"
 	"fmt"
-	"gorm.io/gorm"
 	"io"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -15,10 +14,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-)
-
-var (
-	db *gorm.DB
 )
 
 func GetAllPods() {
@@ -33,7 +28,7 @@ func GetAllPods() {
 	}
 }
 
-func Getk8sVersion() error {
+func GetK8sVersion() error {
 	version, err := kubeClient.Discovery().ServerVersion()
 	if err != nil {
 		return err
