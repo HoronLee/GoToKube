@@ -8,7 +8,7 @@ import (
 )
 
 func Index(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.tmpl", gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"DockerV":        docker.EnvInfo.DockerVersion,
 		"DockerComposeV": docker.EnvInfo.DockerCVersion,
 		"KubeVersion":    kubernetes.EnvInfo.KubeVersion,

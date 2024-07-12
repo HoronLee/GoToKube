@@ -9,8 +9,6 @@ func SetupRouter() *gin.Engine {
 	// 开发模式：DebugMode 线上模式：ReleaseMode
 	gin.SetMode(gin.DebugMode)
 	router := gin.Default()
-	// 加载模板
-	router.LoadHTMLGlob("webSrc/template/*")
 	// 路由设置
 	router.GET("/", controller.Index)
 	registerKubeRoutes(router)
@@ -37,8 +35,10 @@ func registerKubeRoutes(router *gin.Engine) {
 func registerDockerRoutes(router *gin.Engine) {
 	docker := router.Group("/docker")
 	docker.GET("/", controller.DockerJson)
-	docker.GET("/search", controller.SearchCtr)
 	docker.GET("/images", controller.GetImages)
 	docker.POST("/uploadImage", controller.UploadImage)
 	docker.DELETE("/images/:id", controller.DeleteImage)
+	docker.GET("/search", controller.SearchContainer)
+	docker.POST("/ctr/create", controller.CreateContainer)
+	docker.DELETE("/ctr/delete/:id", controller.DeleteContainer)
 }

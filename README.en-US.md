@@ -27,8 +27,7 @@ Makes it easier and faster to use Kubernetes
 
 1. Go to the project directory and execute `go build`. 2.
 2. Get the `VDController` binary and give it executable permissions `sudo chmod +x VDController`. 3.
-3. Put `VDController` into a separate folder and put it into the project's webSrc folder.
-4. Execute `. /VDController` to start the application
+3. Execute `. /VDController` to start the application
 
 ## Configuration files
 

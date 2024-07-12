@@ -27,8 +27,7 @@
 
 1. 进入项目目录执行`go build`
 2. 得到`VDController`二进制文件，给予可执行权限`sudo chmod +x VDController`
-3. 将`VDController`放到独立文件夹，并且放入项目的 webSrc 文件夹
-4. 执行`./VDController`即可开启程序
+3. 执行`./VDController`即可开启程序
 
 ## 配置文件
 

@@ -95,8 +95,12 @@ func UploadYaml(c *gin.Context) {
 	}
 	// 检查是否存在同名文件
 	if _, err := os.Stat(dst); err == nil {
-		c.String(http.StatusConflict, fmt.Sprintf("file '%s' already exists", file.Filename))
-		return
+		// 删除同名文件
+		if err := os.Remove(dst); err != nil {
+			c.String(http.StatusInternalServerError, fmt.Sprintf("failed to delete existing file: %s", err.Error()))
+			return
+		}
+		logger.GlobalLogger.Info("deleted existing file: " + dst)
 	} else if !os.IsNotExist(err) {
 		c.String(http.StatusInternalServerError, fmt.Sprintf("failed to check file existence: %s", err.Error()))
 		return
@@ -115,14 +119,44 @@ func UploadYaml(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		logger.GlobalLogger.Info("delete file: " + dst)
+		logger.GlobalLogger.Info("deleted file after apply failure: " + dst)
 		return
 	}
 	c.String(http.StatusOK, fmt.Sprintf("'%s' uploaded and resources created!", file.Filename))
 }
 
+// DeleteYaml 删除 YAML 文件并删除集群资源
+func DeleteYaml(c *gin.Context) {
+	fileName := c.Param("file")
+	filePath := filepath.Join("./uploads/yaml", fileName)
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		c.JSON(http.StatusNotFound, gin.H{"error": "file not found"})
+		return
+	}
+	err := kubernetes.DeleteYAML(filePath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			c.JSON(http.StatusNotFound, gin.H{"error": "file not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	// 删除文件
+	if err := os.Remove(filePath); err != nil {
+		if os.IsNotExist(err) {
+			c.JSON(http.StatusOK, gin.H{"message": "resource deleted successfully and file already deleted"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	logger.GlobalLogger.Info("deleted file: " + fileName)
+	c.JSON(http.StatusOK, gin.H{"message": "resource and file deleted successfully"})
+}
+
 func ListYamlFiles(c *gin.Context) {
-	files, err := os.ReadDir("./uploads")
+	files, err := os.ReadDir("./uploads/yaml")
 	if err != nil {
 		c.String(http.StatusInternalServerError, fmt.Sprintf("read dir err: %s", err.Error()))
 		return
@@ -132,29 +166,4 @@ func ListYamlFiles(c *gin.Context) {
 		fileNames = append(fileNames, file.Name())
 	}
 	c.JSON(http.StatusOK, fileNames)
-}
-
-func DeleteYaml(c *gin.Context) {
-	fileName := c.Param("file")
-	filePath := filepath.Join("./uploads", fileName)
-
-	if _, err := os.Stat(filePath); os.IsNotExist(err) {
-		c.JSON(http.StatusNotFound, gin.H{"error": "file not found"})
-		return
-	}
-
-	err := kubernetes.DeleteYAML(filePath)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	} else {
-		err := os.Remove(filePath)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		logger.GlobalLogger.Info("delete file: " + fileName)
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "resource deleted successfully"})
 }

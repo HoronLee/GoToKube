@@ -12,7 +12,7 @@ func DockerJson(c *gin.Context) {
 	c.JSON(http.StatusOK, docker.EnvInfo)
 }
 
-func SearchCtr(c *gin.Context) {
+func SearchContainer(c *gin.Context) {
 	ctrName, ok := c.GetQuery("ctr")
 	outPut := make(map[string]interface{})
 	if !ok {
@@ -31,8 +31,7 @@ func SearchCtr(c *gin.Context) {
 func GetImages(c *gin.Context) {
 	images, err := docker.GetImages()
 	if err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, "Failed to fetch images")
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch images"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	logger.GlobalLogger.Log(logger.INFO, "Fetched images successfully")
@@ -43,22 +42,19 @@ func UploadImage(c *gin.Context) {
 	// 从请求中读取文件
 	file, err := c.FormFile("file")
 	if err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, "Failed to get form file")
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to get form file"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	// 创建文件保存路径
 	savePath := filepath.Join("/tmp", file.Filename)
 	// 保存文件到指定路径
 	if err := c.SaveUploadedFile(file, savePath); err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, "Failed to save uploaded file")
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save uploaded file"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	// 上传镜像
 	if err := docker.UploadImage(savePath); err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, "Failed to upload image")
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to upload image"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	logger.GlobalLogger.Log(logger.INFO, "Image uploaded successfully")
@@ -73,10 +69,46 @@ func DeleteImage(c *gin.Context) {
 		return
 	}
 	if err := docker.DeleteImage(imageID); err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, "Failed to delete image")
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete image"})
+		logger.GlobalLogger.Log(logger.ERROR, err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	logger.GlobalLogger.Log(logger.INFO, "Image deleted successfully")
 	c.JSON(http.StatusOK, gin.H{"message": "Image deleted successfully"})
+}
+
+// CreateContainer 创建 Docker 容器
+func CreateContainer(c *gin.Context) {
+	var request struct {
+		ImageName     string            `json:"imageName"`
+		ContainerName string            `json:"containerName"`
+		Cmd           []string          `json:"cmd,omitempty"`
+		PortBindings  map[string]string `json:"portBindings"`
+		Volumes       map[string]string `json:"volumes"`
+	}
+	if err := c.BindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	containerID, err := docker.CreateContainer(request.ImageName, request.ContainerName, request.Cmd, request.PortBindings, request.Volumes)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"containerID": containerID})
+}
+
+// DeleteContainer 删除指定的 Docker 容器
+func DeleteContainer(c *gin.Context) {
+	containerID := c.Param("id")
+	if containerID == "" {
+		logger.GlobalLogger.Log(logger.ERROR, "Container ID not provided")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Container ID not provided"})
+		return
+	}
+	if err := docker.DeleteContainer(containerID); err != nil {
+		logger.GlobalLogger.Log(logger.ERROR, "Failed to delete container")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Container deleted successfully"})
 }
