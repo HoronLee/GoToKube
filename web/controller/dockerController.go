@@ -112,3 +112,31 @@ func DeleteContainer(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Container deleted successfully"})
 }
+
+// StopContainer 停止指定的 Docker 容器
+func StopContainer(c *gin.Context) {
+	containerID := c.Param("id")
+	if containerID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Container ID not provided"})
+		return
+	}
+	if _, err := docker.StopContainer(containerID); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Container stopped successfully"})
+}
+
+// StartContainer 启动指定的 Docker 容器
+func StartContainer(c *gin.Context) {
+	containerID := c.Param("id")
+	if containerID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Container ID not provided"})
+		return
+	}
+	if _, err := docker.StartContainer(containerID); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Container started successfully"})
+}

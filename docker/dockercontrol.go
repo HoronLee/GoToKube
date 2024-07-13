@@ -10,6 +10,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -182,4 +183,34 @@ func DeleteContainer(containerID string) error {
 	}
 	logger.GlobalLogger.Log(logger.INFO, "Container deleted successfully")
 	return nil
+}
+
+// StopContainer 停止指定的 Docker 容器
+func StopContainer(containerID string) (string, error) {
+	// 创建带超时的上下文，10s 过期
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// 停止容器
+	if err := dockerClient.ContainerStop(ctx, containerID, container.StopOptions{}); err != nil {
+		logger.GlobalLogger.Log(logger.ERROR, fmt.Sprintf("Failed to stop container %s: %v", containerID, err))
+		return containerID, err
+	}
+
+	logger.GlobalLogger.Log(logger.INFO, fmt.Sprintf("Container %s stopped successfully", containerID))
+	return containerID, nil
+}
+
+// StartContainer 启动指定的 Docker 容器
+func StartContainer(containerID string) (string, error) {
+	// 创建带超时的上下文，10s 过期
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// 启动容器
+	if err := dockerClient.ContainerStart(ctx, containerID, container.StartOptions{}); err != nil {
+		logger.GlobalLogger.Log(logger.ERROR, fmt.Sprintf("Failed to start container %s: %v", containerID, err))
+		return containerID, err
+	}
+	return containerID, nil
 }

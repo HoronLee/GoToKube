@@ -38,7 +38,7 @@ func InitGlobalLogger(level LogLevel) error {
 	mu.Lock()
 	defer mu.Unlock()
 	if GlobalLogger != nil {
-		return errors.New("Global logger already initialized")
+		return errors.New("global logger already initialized")
 	}
 	GlobalLogger = NewLogger(level)
 	return nil
@@ -95,7 +95,7 @@ func (l *Logger) Log(level LogLevel, msg string) {
 	}
 }
 
-// ChatGPT: 可以直接使用logrus提供的方法
+// 也可以直接使用logrus提供的方法
 func (l *Logger) Info(msg string) {
 	l.logger.Info(msg)
 }

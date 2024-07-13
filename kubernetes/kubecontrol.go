@@ -169,43 +169,48 @@ func ApplyYAML(filePath string) error {
 // filePath: YAML文件的路径。
 // 返回值: 如果文件不是有效的YAML文件或删除资源过程中出现错误，则返回错误；否则返回nil。
 func DeleteYAML(filePath string) error {
-	// 检查文件是否为有效的YAML文件。
+	// 检查文件是否为有效的 YAML 文件。
 	if !IsYAML(filePath) {
 		return fmt.Errorf("file %s is not a valid YAML file", filePath)
 	}
-	// 打开文件以进行读取。
+	// 打开 YAML 文件。
 	file, err := os.Open(filePath)
 	if err != nil {
 		return fmt.Errorf("failed to open file: %v", err)
 	}
-	defer file.Close()
-	// 使用YAML或JSON解码器解析文件内容。
+	defer file.Close() // 确保文件在函数返回前关闭。
+
+	// 创建一个解码器，用于解析 YAML 或 JSON 格式的文件。
 	decoder := yaml.NewYAMLOrJSONDecoder(file, 4096)
+
 	for {
-		// 解码YAML对象到Unstructured对象。
+		// 解码器读取并解析 YAML 文件中的下一个对象。
 		var u unstructured.Unstructured
 		if err := decoder.Decode(&u); err != nil {
 			if err == io.EOF {
-				// 文件读取结束，退出循环。
+				// 文件结束，正常退出循环。
 				break
 			}
-			// 解码失败，返回错误。
+			// 解析错误，返回错误信息。
 			return fmt.Errorf("failed to decode YAML: %v", err)
 		}
-		// 获取Unstructured对象的GroupVersionKind信息。
+
+		// 获取解码后的对象的 GroupVersionKind 信息。
 		gvk := u.GroupVersionKind()
-		// 根据GVK信息构造GroupVersionResource，用于资源操作。
+		// 根据 GroupVersionKind 信息构造资源的 GroupVersionResource。
 		resource := schema.GroupVersionResource{
 			Group:    gvk.Group,
 			Version:  gvk.Version,
 			Resource: strings.ToLower(gvk.Kind) + "s",
 		}
-		// 获取资源的命名空间，默认为"default"。
+
+		// 获取对象的命名空间，如果未指定，则使用默认命名空间。
 		namespace := u.GetNamespace()
 		if namespace == "" {
 			namespace = "default"
 		}
-		// 创建动态客户端，用于删除资源。
+
+		// 根据资源信息和命名空间，获取动态客户端，用于删除资源。
 		resourceClient := dynamicClient.Resource(resource).Namespace(namespace)
 		// 删除资源，并处理可能的错误。
 		err = resourceClient.Delete(context.TODO(), u.GetName(), metav1.DeleteOptions{})

@@ -20,7 +20,7 @@ type Info struct {
 func CheckStatus() bool {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
-		fmt.Println("Failed to create Docker client:", err)
+		logger.GlobalLogger.Error(err.Error())
 		return false
 	}
 	ifok, status := dockerChecks(cli)
@@ -49,7 +49,7 @@ func dockerChecks(cli *client.Client) (ifok bool, status string) {
 		logger.GlobalLogger.Log(logger.ERROR, status)
 		return ifok, status
 	} else {
-		EnvInfo.DockerVersion = string(sVersion.Version)
+		EnvInfo.DockerVersion = sVersion.Version
 		dstatus := "Docker version:" + sVersion.Version
 		// 检查 Docker Compose 版本
 		dockerCompV, err := exec.Command("docker", "compose", "version").Output()

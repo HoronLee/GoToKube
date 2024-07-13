@@ -41,4 +41,6 @@ func registerDockerRoutes(router *gin.Engine) {
 	docker.GET("/search", controller.SearchContainer)
 	docker.POST("/ctr/create", controller.CreateContainer)
 	docker.DELETE("/ctr/delete/:id", controller.DeleteContainer)
+	docker.POST("/ctr/stop/:id", controller.StopContainer)
+	docker.POST("/ctr/start/:id", controller.StartContainer)
 }

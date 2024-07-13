@@ -7,3 +7,4 @@ er.name
 config.toml
 data.db
 /uploads
+/qodana.yaml
