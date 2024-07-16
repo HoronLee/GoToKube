@@ -1,9 +1,9 @@
 .idea/
 GoToKube
 /GoToKube.exe
-Dockerfile
 er.name
 config.toml
 data.db
 /uploads
 /app.log
+/k8sConfig

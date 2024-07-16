@@ -1,0 +1,11 @@
+uploads
+app.log
+config.toml
+data.db
+er.name
+GoToKube
+qodana.yaml
+README.en-US.md
+README.md
+.vscode
+.gitignore
