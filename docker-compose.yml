@@ -5,10 +5,10 @@ services:
     environment:
       - WEB_ENABLE=true
       - LISTENING_PORT=80
-      - KUBE_ENABLE=true
-      - KUBE_CONFIG_PATH=/root/config
+      - KUBE_ENABLE=false
+      - KUBE_CONFIG_PATH=/root/.kube/config
     volumes:
-      - ./k8sConfig:/root/config
+      - /home/horonlee/.kube/config:/root/.kube/config
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - "8080:80"
