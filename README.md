@@ -34,7 +34,7 @@
 - `WebEnable = true&false` 开启程序后是否自动开启网页功能
 - `ListeningPort = '0.0.0.0:8080'` 网页功能的监听地址以及端口
 - `KubeEnable = true&false` 开启程序后是否自动开启 kubernetes 功能
-- `KubeconfigPath = '.kube/config 文件路径'` kubernetes 功能的配置文件路径
+- `KubeConfigPath = '.kube/config 文件路径'` kubernetes 功能的配置文件路径
   - 如果不填写此项，则默认会使用 $HOME/.kube/config`''`
 - `DBType = 'sqlite&mysql'` 数据库类型，默认为 sqlite，目前仅支持 sqlite和mysql
 - `DBPath = 'data.db'` 数据库文件路径，默认为程序当前目录的`data.db`
@@ -49,7 +49,7 @@
 WebEnable = true
 ListeningPort = '127.0.0.1:1024'
 KubeEnable = true
-KubeconfigPath = '/Users/horonlee/Downloads/k8s/config'
+KubeConfigPath = '/Users/horonlee/Downloads/k8s/config'
 ```
 
 ## 网页端用法
@@ -63,4 +63,4 @@ KubeconfigPath = '/Users/horonlee/Downloads/k8s/config'
 
 支持通过启动参数来配置软件的设置，如：`./VDController -kubeconfig="/home/user/document/k8s/config"
 
-- `-kubeconfig` Kubernetes配置文件路径
+- `-KubeConfig` Kubernetes配置文件路径

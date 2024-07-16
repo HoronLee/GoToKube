@@ -21,9 +21,9 @@ func initDocker() {
 	var err error
 	dockerClient, err = newClient()
 	if err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, "Docker Client creation failed"+err.Error())
+		logger.GlobalLogger.Error("Docker Client creation failed" + err.Error())
 	} else {
-		logger.GlobalLogger.Log(logger.INFO, "Docker Client was successfully created")
+		logger.GlobalLogger.Info("Docker Client was successfully created")
 	}
 }
 
@@ -45,9 +45,9 @@ func Close() error {
 func GetCtr() ([]types.Container, error) {
 	containers, err := dockerClient.ContainerList(context.Background(), container.ListOptions{})
 	if err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, "Failed to get containers"+err.Error())
+		logger.GlobalLogger.Error("Failed to get containers" + err.Error())
 	} else {
-		logger.GlobalLogger.Log(logger.INFO, "Success to get containers")
+		logger.GlobalLogger.Info("Success to get containers")
 	}
 	return containers, err
 }
@@ -74,9 +74,9 @@ func GetCtrByImg(imgName string) ([]types.Container, error) {
 func GetImages() ([]image.Summary, error) {
 	images, err := dockerClient.ImageList(context.Background(), image.ListOptions{})
 	if err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, err.Error())
+		logger.GlobalLogger.Error(err.Error())
 	} else {
-		logger.GlobalLogger.Log(logger.INFO, "Success to get images")
+		logger.GlobalLogger.Info("Success to get images")
 	}
 	return images, err
 }
@@ -86,24 +86,24 @@ func UploadImage(filePath string) error {
 	// 打开镜像文件
 	file, err := os.Open(filePath)
 	if err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, fmt.Sprintf("Failed to open image file: %s", err))
+		logger.GlobalLogger.Error(fmt.Sprintf("Failed to open image file: %s", err))
 		return err
 	}
 	defer file.Close()
 	// 上传镜像
 	response, err := dockerClient.ImageLoad(context.Background(), file, true)
 	if err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, fmt.Sprintf("Failed to load image: %s", err))
+		logger.GlobalLogger.Error(fmt.Sprintf("Failed to load image: %s", err))
 		return err
 	}
 	defer response.Body.Close()
 	// 读取上传响应
 	_, err = io.Copy(os.Stdout, response.Body)
 	if err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, fmt.Sprintf("Failed to read response: %s", err))
+		logger.GlobalLogger.Error(fmt.Sprintf("Failed to read response: %s", err))
 		return err
 	}
-	logger.GlobalLogger.Log(logger.INFO, "Image was successfully uploaded")
+	logger.GlobalLogger.Info("Image was successfully uploaded")
 	return nil
 }
 
@@ -111,9 +111,9 @@ func UploadImage(filePath string) error {
 func DeleteImage(imageID string) error {
 	_, err := dockerClient.ImageRemove(context.Background(), imageID, image.RemoveOptions{Force: true, PruneChildren: true})
 	if err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, fmt.Sprintf("Failed to delete image: %s", err))
+		logger.GlobalLogger.Error(fmt.Sprintf("Failed to delete image: %s", err))
 		return err
 	}
-	logger.GlobalLogger.Log(logger.INFO, "Image deleted successfully")
+	logger.GlobalLogger.Info("Image deleted successfully")
 	return nil
 }

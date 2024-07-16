@@ -34,7 +34,7 @@ Makes it easier and faster to use Kubernetes
 - `WebEnable = true&false` Whether to automatically enable the web function after starting the program
 - `ListeningPort = '0.0.0.0:8080'` The listening address and port for the web function
 - `KubeEnable = true&false` Whether to automatically enable the Kubernetes function after starting the program
-- `KubeconfigPath = '.kube/config file path'` The configuration file path for the Kubernetes function
+- `KubeConfigPath = '.kube/config file path'` The configuration file path for the Kubernetes function
     - If not specified, the default will be `$HOME/.kube/config`
 - `DBType = 'sqlite&mysql'` Database type, defaults to sqlite. Currently, only sqlite and mysql are supported
 - `DBPath = 'data.db'` Database file path, defaults to `data.db` in the current directory of the program
@@ -49,7 +49,7 @@ Example:
 WebEnable = true
 ListeningPort = '127.0.0.1:1024'
 KubeEnable = true
-KubeconfigPath = '/Users/horonlee/Downloads/k8s/config'
+KubeConfigPath = '/Users/horonlee/Downloads/k8s/config'
 ```
 
 ## Web usage
@@ -64,4 +64,4 @@ Most of the software's features are provided by the API, the best way to get sta
 
 > Support to configure software settings via startup parameters, e.g.: `./VDController -kubeconfig="/home/user/document/k8s/config"
 
-- `-kubeconfig` Kubernetes configuration file path
+- `-KubeConfig` Kubernetes configuration file path

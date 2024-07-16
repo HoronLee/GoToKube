@@ -4,18 +4,12 @@ import (
 	"GoToKube/logger"
 	"context"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"os/exec"
 	"strings"
 
 	"github.com/docker/docker/client"
 )
-
-var EnvInfo = Info{}
-
-type Info struct {
-	DockerVersion  string `json:"dockerVersion"`
-	DockerCVersion string `json:"dockerComposeVersion"`
-}
 
 func CheckStatus() bool {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
@@ -39,35 +33,35 @@ func dockerChecks(cli *client.Client) (ifok bool, status string) {
 	_, err := cli.Info(ctx)
 	if err != nil {
 		ifok, status = false, fmt.Sprint(err)
-		logger.GlobalLogger.Log(logger.ERROR, status)
+		logger.GlobalLogger.Log(logrus.ErrorLevel, status)
 		return ifok, status
 	}
 	// 检查 Docker 版本
 	sVersion, err := cli.ServerVersion(ctx)
 	if err != nil {
 		ifok, status = false, "Unable to get Docker version."
-		logger.GlobalLogger.Log(logger.ERROR, status)
+		logger.GlobalLogger.Log(logrus.ErrorLevel, status)
 		return ifok, status
 	} else {
-		EnvInfo.DockerVersion = sVersion.Version
-		dstatus := "Docker version:" + sVersion.Version
+		// TODO: 将 Docker 信息写入数据表
+		dockerStatus := "Docker version:" + sVersion.Version
 		// 检查 Docker Compose 版本
-		dockerCompV, err := exec.Command("docker", "compose", "version").Output()
+		dockerCVersion, err := exec.Command("docker", "compose", "version").Output()
 		if err != nil {
 			ifok, status = false, "Unable to get the Docker Compose version, you will not be able to use the Docker Compose feature，\n"+"See https://docs.docker.com/compose/install/ to install Docker Compose."
-			logger.GlobalLogger.Log(logger.WARNING, status)
+			logger.GlobalLogger.Log(logrus.WarnLevel, status)
 			return ifok, status
 		} else {
-			versionIndex := strings.Index(string(dockerCompV), "version")
+			versionIndex := strings.Index(string(dockerCVersion), "version")
 			if versionIndex != -1 {
-				versionStr := strings.TrimSpace(string(dockerCompV)[versionIndex+len("version v"):])
-				ifok, status = true, dstatus+", "+"Docker Compose 版本:"+versionStr
-				EnvInfo.DockerCVersion = versionStr
+				versionStr := strings.TrimSpace(string(dockerCVersion)[versionIndex+len("version v"):])
+				ifok, status = true, dockerStatus+", "+"Docker Compose 版本:"+versionStr
+				// TODO: 将 DockerCompose 信息写入数据表
 			} else {
-				ifok, status = true, dstatus+"\n"+"Unable to get Docker Compose version."
+				ifok, status = true, dockerStatus+"\n"+"Unable to get Docker Compose version."
 			}
 		}
-		logger.GlobalLogger.Log(logger.INFO, status)
+		logger.GlobalLogger.Log(logrus.InfoLevel, status)
 		return ifok, status
 	}
 }

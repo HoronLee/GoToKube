@@ -12,7 +12,7 @@ type Config struct {
 	ListeningAddr  string `toml:"ListeningPort"`
 	TermEnable     bool   `toml:"TermEnable"`
 	KubeEnable     bool   `toml:"KubeEnable"`
-	KubeconfigPath string `toml:"KubeconfigPath"`
+	KubeConfigPath string `toml:"KubeConfigPath"`
 	DBType         string `toml:"DBType"`
 	DBPath         string `toml:"DBPath"`
 	DBAddr         string `toml:"DBAddr"`
@@ -22,19 +22,17 @@ type Config struct {
 }
 
 var (
-	ConfigData Config
-	cLogger    *logger.Logger
+	Data Config
 )
 
-func init() {
-	cLogger = logger.NewLogger(logger.INFO)
+func InitConfig() {
 	configPath := "config.toml"
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		cLogger.Log(logger.INFO, "配置文件不存在，自动创建默认配置文件")
+		logger.GlobalLogger.Error("Configuration file does not exist, automatically create a default configuration file")
 		createDefaultConfig(configPath)
 	}
-	cLogger.Log(logger.INFO, "读取配置文件")
-	ConfigData = readConfig(configPath)
+	logger.GlobalLogger.Info("Read configuration file")
+	Data = readConfig(configPath)
 }
 
 // 默认配置文件
@@ -44,7 +42,7 @@ func createDefaultConfig(path string) {
 		ListeningAddr:  ":8080",
 		TermEnable:     false,
 		KubeEnable:     false,
-		KubeconfigPath: "",
+		KubeConfigPath: "",
 		DBType:         "sqlite",
 		DBPath:         "data.db",
 		DBAddr:         "",
@@ -57,12 +55,17 @@ func createDefaultConfig(path string) {
 	if err != nil {
 		panic(err)
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(file)
 	// 编码为 toml 格式
 	if err := toml.NewEncoder(file).Encode(config); err != nil {
 		panic(err)
 	} else {
-		cLogger.Log(logger.INFO, "配置文件创建成功")
+		logger.GlobalLogger.Info("Configuration file created successfully")
 	}
 
 }
@@ -74,12 +77,17 @@ func readConfig(path string) Config {
 	if err != nil {
 		panic(err)
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(file)
 	// 解码为 Config 结构体类型
 	if err := toml.NewDecoder(file).Decode(&config); err != nil {
 		panic(err)
 	} else {
-		cLogger.Log(logger.INFO, "配置文件读取成功")
+		logger.GlobalLogger.Info("Configuration file read successfully")
 	}
 	return config
 }

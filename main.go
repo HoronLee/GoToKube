@@ -9,16 +9,19 @@ import (
 	"GoToKube/terminal"
 	"GoToKube/web"
 	"fmt"
+	"github.com/sirupsen/logrus"
+	"log"
 	"sync"
 )
 
 var mainWg sync.WaitGroup
 
 func main() {
-	err := logger.InitGlobalLogger(logger.INFO)
+	err := logger.InitGlobalLogger(logrus.InfoLevel)
 	if err != nil {
-		return
+		log.Fatalf("Failed to initialize global logger: %v", err)
 	}
+	config.InitConfig()
 	checkStatus()
 }
 
@@ -29,7 +32,7 @@ func checkStatus() {
 		if err != nil {
 			logger.GlobalLogger.Error("Database connection failed")
 			panic(err)
-		} else if !config.ConfigData.KubeEnable {
+		} else if !config.Data.KubeEnable {
 			fmt.Println("⚓️不启用 kubernetes 控制器")
 			if !docker.CheckStatus() {
 				panic("Docker is not healthy,please start docker")
@@ -46,7 +49,7 @@ func checkStatus() {
 		logger.GlobalLogger.Error("Database is not healthy, please check the relevant configuration of the database")
 		panic("Database is not healthy")
 	}
-	if config.ConfigData.TermEnable {
+	if config.Data.TermEnable {
 		mainWg.Add(1)
 		go terminal.Terminal(&mainWg)
 	}

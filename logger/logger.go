@@ -2,24 +2,14 @@ package logger
 
 import (
 	"errors"
+	"github.com/sirupsen/logrus"
 	"os"
 	"sync"
-	"time"
-
-	"github.com/sirupsen/logrus"
 )
-
-type LogLevel int
 
 var (
 	GlobalLogger *Logger
 	mu           sync.Mutex
-)
-
-const (
-	INFO LogLevel = iota
-	WARNING
-	ERROR
 )
 
 type Logger struct {
@@ -34,7 +24,7 @@ func getConfig(key string, fallback string) string {
 	return fallback
 }
 
-func InitGlobalLogger(level LogLevel) error {
+func InitGlobalLogger(level logrus.Level) error {
 	mu.Lock()
 	defer mu.Unlock()
 	if GlobalLogger != nil {
@@ -44,27 +34,12 @@ func InitGlobalLogger(level LogLevel) error {
 	return nil
 }
 
-func NewLogger(level LogLevel) *Logger {
+func NewLogger(level logrus.Level) *Logger {
 	logger := logrus.New()
+	logger.SetLevel(level)
 
-	switch level {
-	case INFO:
-		logger.SetLevel(logrus.InfoLevel)
-	case WARNING:
-		logger.SetLevel(logrus.WarnLevel)
-	case ERROR:
-		logger.SetLevel(logrus.ErrorLevel)
-	}
-
-	logDir := getConfig("LOG_DIR", "logs")
-	logFileName := logDir + "/" + time.Now().Format("2006-01-02") + ".log"
-
-	// 目录不存在则新建
-	if _, err := os.Stat(logDir); os.IsNotExist(err) {
-		if err := os.Mkdir(logDir, 0755); err != nil {
-			os.Exit(0)
-		}
-	}
+	logDir := getConfig("LOG_DIR", ".")
+	logFileName := logDir + "/app.log"
 
 	// 使用logrus的RotatingFileWriter实现日志滚动
 	file, err := os.OpenFile(logFileName, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
@@ -82,20 +57,21 @@ func NewLogger(level LogLevel) *Logger {
 	return &Logger{logger: logger}
 }
 
-func (l *Logger) Log(level LogLevel, msg string) {
-	if l.logger.IsLevelEnabled(logrus.Level(level)) {
+func (l *Logger) Log(level logrus.Level, msg string) {
+	if l.logger.IsLevelEnabled(level) {
 		switch level {
-		case INFO:
+		case logrus.InfoLevel:
 			l.logger.Info(msg)
-		case WARNING:
+		case logrus.WarnLevel:
 			l.logger.Warn(msg)
-		case ERROR:
+		case logrus.ErrorLevel:
 			l.logger.Error(msg)
+		default:
+			panic("unhandled default case")
 		}
 	}
 }
 
-// 也可以直接使用logrus提供的方法
 func (l *Logger) Info(msg string) {
 	l.logger.Info(msg)
 }
@@ -106,4 +82,8 @@ func (l *Logger) Warn(msg string) {
 
 func (l *Logger) Error(msg string) {
 	l.logger.Error(msg)
+}
+
+func (l *Logger) Fatal(msg string) {
+	l.logger.Fatal(msg)
 }

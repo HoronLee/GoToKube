@@ -45,15 +45,15 @@ func CreateContainer(imageName string, containerName string, cmd []string, portB
 	// 创建容器
 	resp, err := dockerClient.ContainerCreate(context.Background(), config, hostConfig, nil, nil, containerName)
 	if err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, fmt.Sprintf("Failed to create container: %s", err))
+		logger.GlobalLogger.Error(fmt.Sprintf("Failed to create container: %s", err))
 		return "", err
 	}
 	// 启动容器
 	if err := dockerClient.ContainerStart(context.Background(), resp.ID, container.StartOptions{}); err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, fmt.Sprintf("Failed to start container: %s", err))
+		logger.GlobalLogger.Error(fmt.Sprintf("Failed to start container: %s", err))
 		return "", err
 	}
-	logger.GlobalLogger.Log(logger.INFO, "Container created and started successfully")
+	logger.GlobalLogger.Info("Container created and started successfully")
 	return resp.ID, nil
 }
 
@@ -61,15 +61,15 @@ func CreateContainer(imageName string, containerName string, cmd []string, portB
 func DeleteContainer(containerID string) error {
 	// 停止容器
 	if err := dockerClient.ContainerStop(context.Background(), containerID, container.StopOptions{}); err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, "Failed to stop container: "+err.Error())
+		logger.GlobalLogger.Error("Failed to stop container: " + err.Error())
 		return err
 	}
 	// 删除容器
 	if err := dockerClient.ContainerRemove(context.Background(), containerID, container.RemoveOptions{Force: true}); err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, "Failed to remove container: "+err.Error())
+		logger.GlobalLogger.Error("Failed to remove container: " + err.Error())
 		return err
 	}
-	logger.GlobalLogger.Log(logger.INFO, "Container deleted successfully")
+	logger.GlobalLogger.Info("Container deleted successfully")
 	return nil
 }
 
@@ -81,11 +81,11 @@ func StopContainer(containerID string) (string, error) {
 
 	// 停止容器
 	if err := dockerClient.ContainerStop(ctx, containerID, container.StopOptions{}); err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, fmt.Sprintf("Failed to stop container %s: %v", containerID, err))
+		logger.GlobalLogger.Error(fmt.Sprintf("Failed to stop container %s: %v", containerID, err))
 		return containerID, err
 	}
 
-	logger.GlobalLogger.Log(logger.INFO, fmt.Sprintf("Container %s stopped successfully", containerID))
+	logger.GlobalLogger.Info(fmt.Sprintf("Container %s stopped successfully", containerID))
 	return containerID, nil
 }
 
@@ -97,7 +97,7 @@ func StartContainer(containerID string) (string, error) {
 
 	// 启动容器
 	if err := dockerClient.ContainerStart(ctx, containerID, container.StartOptions{}); err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, fmt.Sprintf("Failed to start container %s: %v", containerID, err))
+		logger.GlobalLogger.Error(fmt.Sprintf("Failed to start container %s: %v", containerID, err))
 		return containerID, err
 	}
 	return containerID, nil

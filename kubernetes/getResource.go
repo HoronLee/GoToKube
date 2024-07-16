@@ -19,15 +19,6 @@ func GetAllPods() {
 	}
 }
 
-func GetK8sVersion() error {
-	version, err := kubeClient.Discovery().ServerVersion()
-	if err != nil {
-		return err
-	}
-	EnvInfo.KubeVersion = version.String()
-	return nil
-}
-
 func GetDeployments(namespace string) (interface{}, error) {
 	deployments, err := kubeClient.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {

@@ -14,7 +14,7 @@ func GetImages(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	logger.GlobalLogger.Log(logger.INFO, "Fetched images successfully")
+	logger.GlobalLogger.Info("Fetched images successfully")
 	c.JSON(http.StatusOK, images)
 }
 
@@ -37,19 +37,19 @@ func UploadImage(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	logger.GlobalLogger.Log(logger.INFO, "Image uploaded successfully")
+	logger.GlobalLogger.Info("Image uploaded successfully")
 	c.JSON(http.StatusOK, gin.H{"message": "Image uploaded successfully"})
 }
 
 func DeleteImage(c *gin.Context) {
 	imageID := c.Param("id")
 	if imageID == "" {
-		logger.GlobalLogger.Log(logger.ERROR, "Image ID not provided")
+		logger.GlobalLogger.Error("Image ID not provided")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Image ID not provided"})
 		return
 	}
 	if err := docker.DeleteImage(imageID); err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, err.Error())
+		logger.GlobalLogger.Error(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

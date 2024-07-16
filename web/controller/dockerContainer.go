@@ -7,10 +7,6 @@ import (
 	"net/http"
 )
 
-func DockerJson(c *gin.Context) {
-	c.JSON(http.StatusOK, docker.EnvInfo)
-}
-
 // CreateContainer 创建 Docker 容器
 func CreateContainer(c *gin.Context) {
 	var request struct {
@@ -80,12 +76,12 @@ func StopContainer(c *gin.Context) {
 func DeleteContainer(c *gin.Context) {
 	containerID := c.Param("id")
 	if containerID == "" {
-		logger.GlobalLogger.Log(logger.ERROR, "Container ID not provided")
+		logger.GlobalLogger.Error("Container ID not provided")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Container ID not provided"})
 		return
 	}
 	if err := docker.DeleteContainer(containerID); err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, "Failed to delete container")
+		logger.GlobalLogger.Error("Failed to delete container")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

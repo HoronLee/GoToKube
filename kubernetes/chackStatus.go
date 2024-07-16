@@ -15,40 +15,44 @@ import (
 var (
 	kubeClient    *kubernetes.Clientset
 	dynamicClient dynamic.Interface
-	EnvInfo       = Info{}
 )
-
-type Info struct {
-	KubeVersion string `json:"kubeVersion"`
-}
 
 func CheckStatus() bool {
 	// 获取 kubernetes 配置文件
-	kubeconfig := config.ConfigData.KubeconfigPath
-	if kubeconfig == "" {
+	KubeConfig := config.Data.KubeConfigPath
+	if KubeConfig == "" {
 		if home := homedir.HomeDir(); home != "" {
-			kubeconfig = filepath.Join(home, ".kube", "config")
+			KubeConfig = filepath.Join(home, ".kube", "config")
 		}
-		flag.StringVar(&kubeconfig, "kubeconfig", kubeconfig, "(optional) absolute path to the kubeconfig file")
+		flag.StringVar(&KubeConfig, "KubeConfig", KubeConfig, "(optional) absolute path to the KubeConfig file")
 	}
 	flag.Parse()
-	kubeConfig, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+	kubeConfig, err := clientcmd.BuildConfigFromFlags("", KubeConfig)
 	if err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, err.Error())
+		logger.GlobalLogger.Error(err.Error())
 		return false
 	}
 	// 创建 kubernetes 客户端
 	kubeClient, err = kubernetes.NewForConfig(kubeConfig)
 	dynamicClient, err = dynamic.NewForConfig(kubeConfig)
 	if err != nil {
-		logger.GlobalLogger.Log(logger.ERROR, err.Error())
+		logger.GlobalLogger.Error(err.Error())
 		return false
 	} else {
 		err = GetK8sVersion()
 		if err != nil {
-			logger.GlobalLogger.Log(logger.ERROR, err.Error())
+			logger.GlobalLogger.Error(err.Error())
 			return false
 		}
 		return true
 	}
+}
+
+func GetK8sVersion() error {
+	_, err := kubeClient.Discovery().ServerVersion()
+	if err != nil {
+		return err
+	}
+	// TODO: 将 DockerCompose 信息写入数据表
+	return nil
 }

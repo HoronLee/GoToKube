@@ -10,7 +10,7 @@ func SetupRouter() *gin.Engine {
 	gin.SetMode(gin.DebugMode)
 	router := gin.Default()
 	// 路由设置
-	router.GET("/", controller.Index)
+	router.GET("/")
 	registerKubeRoutes(router)
 	registerDockerRoutes(router)
 	return router
@@ -19,7 +19,6 @@ func SetupRouter() *gin.Engine {
 // registerKubeRoutes groups and registers Kube related routes.
 func registerKubeRoutes(router *gin.Engine) {
 	kube := router.Group("/kube")
-	kube.GET("/", controller.KubeJson)
 	kube.GET("/deployment/:namespace", controller.GetDeployments)
 	kube.GET("/deployment/:namespace/:name", controller.GetDeployment)
 	kube.DELETE("/deployment/:namespace/:name", controller.DeleteDeployment)
@@ -39,7 +38,6 @@ func registerKubeRoutes(router *gin.Engine) {
 // registerDockerRoutes groups and registers Docker related routes.
 func registerDockerRoutes(router *gin.Engine) {
 	docker := router.Group("/docker")
-	docker.GET("/", controller.DockerJson)
 	docker.GET("/image", controller.GetImages)
 	docker.POST("/uploadImage", controller.UploadImage)
 	docker.DELETE("/image/:id", controller.DeleteImage)

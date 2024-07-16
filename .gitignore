@@ -1,4 +1,3 @@
-logs/
 .idea/
 GoToKube
 /GoToKube.exe
@@ -7,3 +6,4 @@ er.name
 config.toml
 data.db
 /uploads
+/app.log

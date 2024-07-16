@@ -6,9 +6,6 @@ import (
 	"net/http"
 )
 
-func KubeJson(c *gin.Context) {
-	c.JSON(http.StatusOK, kubernetes.EnvInfo)
-}
 func GetDeployments(c *gin.Context) {
 	namespace := c.Param("namespace")
 	deployments, err := kubernetes.GetDeployments(namespace)
