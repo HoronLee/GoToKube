@@ -16,8 +16,7 @@ type Logger struct {
 	logger *logrus.Logger
 }
 
-// 通过环境变量获取配置
-func getConfig(key string, fallback string) string {
+func getConfigFromEnv(key string, fallback string) string {
 	if value, exists := os.LookupEnv(key); exists {
 		return value
 	}
@@ -38,8 +37,13 @@ func NewLogger(level logrus.Level) *Logger {
 	logger := logrus.New()
 	logger.SetLevel(level)
 
-	logDir := getConfig("LOG_DIR", ".")
+	logDir := getConfigFromEnv("LOG_DIR", ".")
 	logFileName := logDir + "/app.log"
+
+	err := os.MkdirAll(logDir, os.ModePerm)
+	if err != nil {
+		logger.Fatalf("failed to create log directory: %v", err)
+	}
 
 	// 使用logrus的RotatingFileWriter实现日志滚动
 	file, err := os.OpenFile(logFileName, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
