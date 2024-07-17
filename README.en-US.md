@@ -3,41 +3,65 @@
 </h1>
 
 <p align="center">
-🐳 Manage Kubernetes Cluster with Ease (Beta).
+🐳 Easily manage Kubernetes clusters (Beta).
 </p>
 
 <pre align="center">
-Makes it easier and faster to use Kubernetes
-🧪 developing
+Make Kubernetes usage more convenient and faster
+🧪 In development
 </pre>
 
-- **English** | [简体中文](./README.md)
+- [English](./README.en-US.md) | **简体中文**
 
-## Key Features:
-- [x] Ability to view Docker and Kubernetes information via the console
-- [x] Multiple database support (SQLite MySQL).
-- [x] Manipulate resources within a kubernetes cluster through various requests using yaml files.
-- [x] Querying, creating and deleting Docker containers
+## Main Features:
+- [x] View Docker and Kubernetes information through the console
 
-## How to build
+- [x] Multi-database support (SQLite, MySQL)
 
-> Required Docker Client API Version >= 1.45
+- [x] Manipulate resources within the Kubernetes cluster using YAML files through various requests
 
-1. Go to the project directory and execute `go build`. 2.
-2. Get the `GoToKube` binary and give it executable permissions `sudo chmod +x GoToKube`
-3. Execute `. /GoToKube` to start the application
+- [x] Query, create, and delete Docker containers
 
-## Configuration files
+  ⚠️: Requires Docker Client API Version >= 1.45
 
-> The configuration file is created in the same directory as the application after the first run and can be changed later.
+## Build Methods
+
+### Build with Make
+
+1. Enter the project directory and open the Makefile
+2. Edit the variables in lines 1-6 to your desired values; generally, you only need to change GOOS (your system) and GOARCH (system architecture)
+3. Run `make` in the current directory to generate the binary file
+4. Grant executable permission with `sudo chmod +x GoToKube`
+5. Run `./GoToKube` to start the program
+
+### Build with Go
+
+1. Enter the project directory and run `go build`
+2. Get the `GoToKube` binary file and grant executable permission with `sudo chmod +x GoToKube`
+3. Run `./GoToKube` to start the program
+
+> Build with Docker
+
+1. Use the Dockerfile in the project to build with `docker build -t gotokube:dev .`
+2. It is recommended to start the container using DockerCompose with `docker-compose up -d`
+   1. The Docker sock file must be mapped into the container; otherwise, the software cannot start
+      ```yml
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      ```
+
+## Configuration File
+
+> The configuration file will be generated in the same directory as the program after the first run and can be modified later
 
 - `WebEnable = true&false` Whether to automatically enable the web function after starting the program
-- `ListeningPort = '0.0.0.0:8080'` The listening address and port for the web function
+- `ListeningAddr = '0.0.0.0:8080'` Listening address and port for the web function
+- `TermEnable = true&false` Whether to enable the interactive terminal
 - `KubeEnable = true&false` Whether to automatically enable the Kubernetes function after starting the program
-- `KubeConfigPath = '.kube/config file path'` The configuration file path for the Kubernetes function
-    - If not specified, the default will be `$HOME/.kube/config`
-- `DBType = 'sqlite&mysql'` Database type, defaults to sqlite. Currently, only sqlite and mysql are supported
-- `DBPath = 'data.db'` Database file path, defaults to `data.db` in the current directory of the program
+- `KubeConfigPath = '.kube/config file path'` Configuration file path for the Kubernetes function
+  - If not specified, the default is `$HOME/.kube/config`
+- `DBType = 'sqlite&mysql'` Database type, default is sqlite, currently only supports sqlite and mysql
+- `DBPath = 'data.db'` Database file path, default is `data.db` in the current directory of the program
 - `DBAddr = '127.0.0.1:3306'` Database address
 - `DBUser = 'root'` Database username
 - `DBPass = 'password'` Database password
@@ -52,16 +76,15 @@ KubeEnable = true
 KubeConfigPath = '/Users/horonlee/Downloads/k8s/config'
 ```
 
-## Web usage
+## Web Usage
 
-Most of the software's features are provided by the API, the best way to get started is to check out the API documentation.: https://documenter.getpostman.com/view/34220703/2sA3e5d86S
+Most of the software's functions are provided by the API. The best way is to check the API documentation: https://documenter.getpostman.com/view/34220703/2sA3e5d86S
 
-## Environment variable
+## Environment Variables
+- LOG_DIR Log file storage path `/var/log/vdcontroller`
 
-- LOG_DIR Path to the log file `/var/log/vdcontroller`.
+## Startup Parameters
 
-## Startup parameters
-
-> Support to configure software settings via startup parameters, e.g.: `./VDController -kubeconfig="/home/user/document/k8s/config"
+Support configuration of software settings through startup parameters, such as: `./GoToKube -kubeconfig="/home/user/document/k8s/config"`
 
 - `-KubeConfig` Kubernetes configuration file path

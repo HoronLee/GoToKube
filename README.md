@@ -15,13 +15,26 @@
 
 ## 主要功能：
 - [x] 可以通过控制台查看 Docker 和 Kubernetes 的信息
+
 - [x] 多数据库支持(SQLite MySQL)
+
 - [x] 通过各种请求来使用 yaml 文件对 kubernetes 集群内的资源进行操控
+
 - [x] 查询、创建和删除 Docker 容器
+
+  ⚠️：需要 Docker Client API Version >= 1.45
 
 ## 构建方法
 
-> 需要的 Docker Client API Version >= 1.45
+### 使用 make 构建
+
+1. 进入项目目录，打开 Makefile
+2. 编辑1-6 行的变量为自己需要的内容，一般只需要更改GOOS（你的系统）和GOARCH（系统架构）
+3. 在当前目录执行 `make`即可生成二进制文件
+4. 给予可执行权限`sudo chmod +x GoToKube`
+5. 执行`./GoToKube`即可开启程序
+
+### 使用 Go 构建
 
 1. 进入项目目录执行`go build`
 2. 得到`GoToKube`二进制文件，给予可执行权限`sudo chmod +x GoToKube`
@@ -42,10 +55,11 @@
 > 配置文件在第一次运行后会在程序同级目录生成，随后可自行更改
 
 - `WebEnable = true&false` 开启程序后是否自动开启网页功能
-- `ListeningPort = '0.0.0.0:8080'` 网页功能的监听地址以及端口
+- `ListeningAddr = '0.0.0.0:8080'` 网页功能的监听地址以及端口
+- `TermEnable = true&false`是否启用可交互终端
 - `KubeEnable = true&false` 开启程序后是否自动开启 kubernetes 功能
 - `KubeConfigPath = '.kube/config 文件路径'` kubernetes 功能的配置文件路径
-  - 如果不填写此项，则默认会使用 $HOME/.kube/config`''`
+  - 如果不填写此项，则默认会使用 `$HOME/.kube/config`
 - `DBType = 'sqlite&mysql'` 数据库类型，默认为 sqlite，目前仅支持 sqlite和mysql
 - `DBPath = 'data.db'` 数据库文件路径，默认为程序当前目录的`data.db`
 - `DBAddr = '127.0.0.1:3306'` 数据库地址
@@ -71,6 +85,6 @@ KubeConfigPath = '/Users/horonlee/Downloads/k8s/config'
 
 ## 启动参数
 
-支持通过启动参数来配置软件的设置，如：`./VDController -kubeconfig="/home/user/document/k8s/config"
+支持通过启动参数来配置软件的设置，如：`./GoToKube -kubeconfig="/home/user/document/k8s/config"
 
 - `-KubeConfig` Kubernetes配置文件路径

@@ -9,7 +9,7 @@ import (
 
 type Config struct {
 	WebEnable      bool   `toml:"WebEnable"`
-	ListeningAddr  string `toml:"ListeningPort"`
+	ListeningAddr  string `toml:"ListeningAddr"`
 	TermEnable     bool   `toml:"TermEnable"`
 	KubeEnable     bool   `toml:"KubeEnable"`
 	KubeConfigPath string `toml:"KubeConfigPath"`
@@ -40,7 +40,7 @@ func InitConfig() {
 func createDefaultConfig(path string) {
 	config := Config{
 		WebEnable:      getEnvBool("WEB_ENABLE", false),
-		ListeningAddr:  getEnv("LISTENING_PORT", ":8080"),
+		ListeningAddr:  getEnv("LISTENING_ADDR", ":8080"),
 		TermEnable:     getEnvBool("TERM_ENABLE", false),
 		KubeEnable:     getEnvBool("KUBE_ENABLE", false),
 		KubeConfigPath: getEnv("KUBE_CONFIG_PATH", ""),
