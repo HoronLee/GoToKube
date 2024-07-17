@@ -38,17 +38,17 @@ func dockerChecks(cli *client.Client) (ifok bool, status string) {
 	}
 	// 检查 Docker 版本
 	sVersion, err := cli.ServerVersion(ctx)
+	// TODO: 将 Docker 信息写入数据表
+	dockerStatus := "Docker version:" + sVersion.Version
 	if err != nil {
-		ifok, status = false, "Unable to get Docker version."
+		ifok, status = false, "Unable to get Docker version: "+err.Error()
 		logger.GlobalLogger.Log(logrus.ErrorLevel, status)
 		return ifok, status
 	} else {
-		// TODO: 将 Docker 信息写入数据表
-		dockerStatus := "Docker version:" + sVersion.Version
 		// 检查 Docker Compose 版本
 		dockerCVersion, err := exec.Command("docker", "compose", "version").Output()
 		if err != nil {
-			ifok, status = false, "Unable to get the Docker Compose version, you will not be able to use the Docker Compose feature，\n"+"See https://docs.docker.com/compose/install/ to install Docker Compose."
+			ifok, status = true, "Unable to get the Docker Compose version, you will not be able to use the Docker Compose feature，\n"+"See https://docs.docker.com/compose/install/ to install Docker Compose:"+err.Error()
 			logger.GlobalLogger.Log(logrus.WarnLevel, status)
 			return ifok, status
 		} else {

@@ -24,8 +24,18 @@
 > 需要的 Docker Client API Version >= 1.45
 
 1. 进入项目目录执行`go build`
-2. 得到`VDController`二进制文件，给予可执行权限`sudo chmod +x VDController`
-3. 执行`./VDController`即可开启程序
+2. 得到`GoToKube`二进制文件，给予可执行权限`sudo chmod +x GoToKube`
+3. 执行`./GoToKube`即可开启程序
+
+> 使用 Docker 构建
+
+1. 使用项目中的 Dockerfile 进行构建`docker build -t gotokube:dev .`
+2. 推荐使用 DockerCompose 启动容器`docker-compose up -d`
+   1. 其中，Docker 的 sock 文件必须映射到容器内，否则无法开启软件
+      ```yml
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      ```
 
 ## 配置文件
 

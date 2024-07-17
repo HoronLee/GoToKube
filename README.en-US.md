@@ -24,8 +24,8 @@ Makes it easier and faster to use Kubernetes
 > Required Docker Client API Version >= 1.45
 
 1. Go to the project directory and execute `go build`. 2.
-2. Get the `VDController` binary and give it executable permissions `sudo chmod +x VDController`. 3.
-3. Execute `. /VDController` to start the application
+2. Get the `GoToKube` binary and give it executable permissions `sudo chmod +x GoToKube`
+3. Execute `. /GoToKube` to start the application
 
 ## Configuration files
 
