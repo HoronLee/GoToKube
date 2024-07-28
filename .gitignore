@@ -6,3 +6,4 @@ data.db
 /app.log
 /k8sConfig
 bin
+.DS_Store

@@ -11,41 +11,37 @@ type Connector interface {
 	Close() error
 }
 
-var (
-	dbConfig = config.Data
-)
-
 func CheckAndSetDefaultConfig() {
 	// 如果 DBType 未设置，默认使用 sqlite
-	if dbConfig.DBType == "" {
-		dbConfig.DBType = "sqlite"
+	if config.Data.DBType == "" {
+		config.Data.DBType = "sqlite"
 		logger.GlobalLogger.Warn("Database type is not specified, defaulting to sqlite")
 	}
 	// 对于 SQLite，如果 DBPath 未设置，则设置为当前目录下的 data.db
-	if dbConfig.DBType == "sqlite" && dbConfig.DBPath == "" {
-		dbConfig.DBPath = "./data.db"
+	if config.Data.DBType == "sqlite" && config.Data.DBPath == "" {
+		config.Data.DBPath = "./data.db"
 		logger.GlobalLogger.Warn("SQLite database path is not set, defaulting to ./data.db")
 	}
 }
 
 func CheckStatus() bool {
 	CheckAndSetDefaultConfig()
-	switch dbConfig.DBType {
+	switch config.Data.DBType {
 	case "":
 		logger.GlobalLogger.Warn("Database type is not specified, defaulting to sqlite")
 		fallthrough
 	case "sqlite":
-		if dbConfig.DBPath == "" {
+		if config.Data.DBPath == "" {
 			logger.GlobalLogger.Error("SQLite database path is not set")
 			return false
 		}
 	case "mysql":
-		if dbConfig.DBAddr == "" || dbConfig.DBUser == "" || dbConfig.DBPass == "" || dbConfig.DBName == "" {
+		if config.Data.DBAddr == "" || config.Data.DBUser == "" || config.Data.DBPass == "" || config.Data.DBName == "" {
 			logger.GlobalLogger.Error("Missing required MySQL configuration parameters")
 			return false
 		}
 	default:
-		logger.GlobalLogger.Error("Unsupported database type: " + dbConfig.DBType)
+		logger.GlobalLogger.Error("Unsupported database type: " + config.Data.DBType)
 		return false
 	}
 	return true
@@ -53,11 +49,11 @@ func CheckStatus() bool {
 
 func GetDBConnection() (db *gorm.DB, err error) {
 	var dbHandler Connector
-	switch dbConfig.DBType {
+	switch config.Data.DBType {
 	case "sqlite":
-		dbHandler = NewSQLiteDB(dbConfig.DBPath)
+		dbHandler = NewSQLiteDB(config.Data.DBPath)
 	case "mysql":
-		dbHandler = NewMySQLDB(dbConfig.DBAddr, dbConfig.DBUser, dbConfig.DBPass, dbConfig.DBName)
+		dbHandler = NewMySQLDB(config.Data.DBAddr, config.Data.DBUser, config.Data.DBPass, config.Data.DBName)
 	default:
 		logger.GlobalLogger.Error("Unsupported database type")
 		panic("Unsupported database type")
