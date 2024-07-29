@@ -32,7 +32,7 @@ func checkStatus() {
 		if err != nil {
 			logger.GlobalLogger.Error("Database connection failed")
 			panic(err)
-		} else if !config.Data.KubeEnable {
+		} else if !config.Data.Kube.Enable {
 			fmt.Println("⚓️不启用 kubernetes 控制器")
 			if !docker.CheckStatus() {
 				panic("Docker is not healthy,please start docker")
@@ -49,11 +49,8 @@ func checkStatus() {
 		logger.GlobalLogger.Error("Database is not healthy, please check the relevant configuration of the database")
 		panic("Database is not healthy")
 	}
-	if config.Data.TermEnable {
-		mainWg.Add(1)
-		go terminal.Terminal(&mainWg)
-	}
-	mainWg.Add(1)
+	mainWg.Add(2)
 	web.CheckStatus(&mainWg)
+	go terminal.Terminal(&mainWg)
 	mainWg.Wait()
 }

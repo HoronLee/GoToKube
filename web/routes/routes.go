@@ -7,7 +7,7 @@ import (
 
 func SetupRouter() *gin.Engine {
 	// 开发模式：DebugMode 线上模式：ReleaseMode
-	gin.SetMode(gin.DebugMode)
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 	// 路由设置
 	router.GET("/")

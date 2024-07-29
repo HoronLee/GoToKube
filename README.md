@@ -24,6 +24,10 @@
 
   ⚠️：需要 Docker Client API Version >= 1.45
 
+## 用法
+
+本软件大多功能由 API 提供，最好的方式是前往查看 API 文档：https://documenter.getpostman.com/view/34220703/2sA3e5d86S
+
 ## 构建方法
 
 ### 使用 make 构建
@@ -52,36 +56,40 @@
 
 ## 配置文件
 
-> 配置文件在第一次运行后会在程序同级目录生成，随后可自行更改
+> 配置文件在第一次运行后会在程序同级目录生成，随后可自行更改，其中大小写**不敏感**
 
-- `WebEnable = true&false` 开启程序后是否自动开启网页功能
-- `ListeningAddr = '0.0.0.0:8080'` 网页功能的监听地址以及端口
-- `TermEnable = true&false`是否启用可交互终端
-- `KubeEnable = true&false` 开启程序后是否自动开启 kubernetes 功能
-- `KubeConfigPath = '.kube/config 文件路径'` kubernetes 功能的配置文件路径
-  - 如果不填写此项，则默认会使用 `$HOME/.kube/config`
-- `DBType = 'sqlite&mysql'` 数据库类型，默认为 sqlite，目前仅支持 sqlite和mysql
-- `DBPath = 'data.db'` 数据库文件路径，默认为程序当前目录的`data.db`
-- `DBAddr = '127.0.0.1:3306'` 数据库地址
-- `DBUser = 'root'` 数据库用户名
-- `DBPass = 'password'` 数据库密码
-- `DBName = 'test'` 数据库名称
+```toml
+[auth]
+pass = 'gotokube'   # 暂无用处
+
+[database]
+addr = ''   # 数据库地址
+name = ''   # 数据库名称
+password = ''   # 数据库密码
+path = 'data.db'    # 数据库文件路径，默认为当前目录下的 data.db
+type = 'sqlite'    # 数据库类型，默认为 sqlite，目前支持sqlite和mysql
+user = ''   # 数据库用户名
+
+[kube]
+configpath = '' # kubernetes 配置文件路径，默认为 $HOME/.kube/config
+enable = true   # 是否启用 kubernetes 功能
+
+[log]
+dir = ''    # 日志文件存放路径
+
+[web]
+enable = true   # 是否启用 web 功能
+listeningaddr = ':8080' # web 服务监听地址
+```
+
+## 环境变量
+
+> 同配置文件，使用 `配置单元`_`配置项` = `配置值` 来设定环境变量（变量值必须大写），这将会覆盖配置文件的值
 
 示例：
 
-```toml
-WebEnable = true
-ListeningPort = '127.0.0.1:1024'
-KubeEnable = true
-KubeConfigPath = '/Users/horonlee/Downloads/k8s/config'
-```
-
-## 网页端用法
-
-本软件大多功能由 API 提供，最好的方式是前往查看 API 文档：https://documenter.getpostman.com/view/34220703/2sA3e5d86S
-
-## 环境变量
-- LOG_DIR 日志文件存放路径`/var/log/vdcontroller`
+- LOG_DIR = '/var/log/gotokub' 日志文件存放路径
+- WEB_LISTENINGADDR = ":9090" web 服务监听地址
 
 ## 启动参数
 

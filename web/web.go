@@ -15,8 +15,8 @@ var (
 )
 
 func CheckStatus(wg *sync.WaitGroup) {
-	if config.Data.WebEnable {
-		fmt.Println("✅在 http://" + config.Data.ListeningAddr + " 上启动 Web 服务")
+	if config.Data.Web.Enable {
+		fmt.Println("✅在 http://" + config.Data.Web.ListeningAddr + " 上启动 Web 服务")
 		wg.Add(1)
 		go StartWeb()
 	} else {
@@ -29,7 +29,7 @@ func StartWeb() {
 	defer mutex.Unlock()
 
 	logger.GlobalLogger.Info("Launching the Web Application")
-	listeningAddr := config.Data.ListeningAddr
+	listeningAddr := config.Data.Web.ListeningAddr
 
 	router := routes.SetupRouter()
 	if router == nil {

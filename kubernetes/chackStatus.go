@@ -19,7 +19,7 @@ var (
 
 func CheckStatus() bool {
 	// 获取 kubernetes 配置文件
-	KubeConfig := config.Data.KubeConfigPath
+	KubeConfig := config.Data.Kube.ConfigPath
 	if KubeConfig == "" {
 		if home := homedir.HomeDir(); home != "" {
 			KubeConfig = filepath.Join(home, ".kube", "config")
