@@ -3,7 +3,6 @@ package kubernetes
 import (
 	"GoToKube/config"
 	"GoToKube/logger"
-	"flag"
 	"k8s.io/client-go/dynamic"
 	"path/filepath"
 
@@ -19,14 +18,12 @@ var (
 
 func CheckStatus() bool {
 	// 获取 kubernetes 配置文件
-	KubeConfig := config.Data.Kube.ConfigPath
+	KubeConfig := config.Data.Kubernetes.ConfigPath
 	if KubeConfig == "" {
 		if home := homedir.HomeDir(); home != "" {
 			KubeConfig = filepath.Join(home, ".kube", "config")
 		}
-		flag.StringVar(&KubeConfig, "KubeConfig", KubeConfig, "(optional) absolute path to the KubeConfig file")
 	}
-	flag.Parse()
 	kubeConfig, err := clientcmd.BuildConfigFromFlags("", KubeConfig)
 	if err != nil {
 		logger.GlobalLogger.Error(err.Error())

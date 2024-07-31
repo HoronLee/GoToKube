@@ -19,23 +19,23 @@ Make Kubernetes usage more convenient and faster
 - [x] Manipulate Kubernetes cluster resources using YAML files via various requests
 - [x] Query, create, and delete Docker containers
 
-⚠️: Requires Docker Client API Version >= 1.45
-
 ## Usage
+
+⚠️: Requires Docker Client API Version >= 1.45
+The environment variable `JWT_SECRET_KEY=JWT_TOKEN` must be set, otherwise the web service will not work properly.
 Most of the software's features are provided by the API. The best way is to check the API documentation: https://documenter.getpostman.com/view/34220703/2sA3e5d86S
 
 ## Building
+
 ### Build using make
 1. Enter the project directory and open Makefile
 2. Edit variables 1-6 to your needs. Generally, you only need to change GOOS (your system) and GOARCH (system architecture)
 3. Execute `make` in the current directory to generate the binary file
 4. Grant executable permissions: `sudo chmod +x GoToKube`
-5. Execute `./GoToKube` to start the program
 
 ### Build using Go
 1. Enter the project directory and execute `go build`
 2. Obtain the `GoToKube` binary file and grant executable permissions: `sudo chmod +x GoToKube`
-3. Execute `./GoToKube` to start the program
 
 > Build using Docker
 1. Build using the Dockerfile in the project: `docker build -t gotokube:dev .`
@@ -57,7 +57,7 @@ pass = 'gotokube'  # Not used yet
 addr = ''  # Database address
 name = ''  # Database name
 password = ''  # Database password
-path = 'data.db'  # Database file path, defaults to data.db in the current directory
+path = 'data.db'  # Sqlite Database file path, defaults to data.db in the current directory
 type = 'sqlite'  # Database type, defaults to sqlite, currently supports sqlite and mysql
 user = ''  # Database username
 
@@ -77,10 +77,5 @@ listeningaddr = ':8080' # Web service listening address
 > Similar to the configuration file, use `configuration unit`_`configuration item` = `configuration value` to set environment variables (variable values must be uppercase), which will override the values in the configuration file
 
 Example:
-- LOG_DIR = '/var/log/gotokub' Log file storage path
-- WEB_LISTENINGADDR = ":9090" Web service listening address
-
-## Startup Parameters
-You can configure the software settings through startup parameters, such as: `./GoToKube -kubeconfig="/home/user/document/k8s/config"
-
-- `-KubeConfig` Kubernetes configuration file path
+- LOG_DIR='/var/log/gotokub' Log file storage path
+- WEB_LISTENINGADDR=":9090" Web service listening addressw

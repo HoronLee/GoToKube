@@ -4,11 +4,12 @@ services:
     container_name: gotokube-container
     environment:
       - WEB_ENABLE=true
-      - LISTENING_ADDR=:80
-      - KUBE_ENABLE=true
-      - KUBE_CONFIG_PATH=/root/.kube/config
+      - WEB_LISTENINGADDR=:80
+      - JWT_SECRET_KEY=JWT_TOKEN
+      - KUBERNETES_ENABLE=false
+      - KUBERNETES_CONFIGPATH=/root/.kube/config
     volumes:
-      - ./k8sConfig:/root/.kube/config
+      - ./kubeconfig:/root/.kube/config
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - "8080:80"

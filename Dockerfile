@@ -6,7 +6,7 @@ COPY . .
 
 RUN go env -w GOPROXY=https://goproxy.cn,direct
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o GoToKube
+RUN CGO_ENABLED=0 GOOS=linux go build -o GoToKube
 
 FROM alpine:latest
 

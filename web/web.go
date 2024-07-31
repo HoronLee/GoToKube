@@ -16,11 +16,11 @@ var (
 
 func CheckStatus(wg *sync.WaitGroup) {
 	if config.Data.Web.Enable {
-		fmt.Println("✅在 http://" + config.Data.Web.ListeningAddr + " 上启动 Web 服务")
+		fmt.Println("✅ 在 http://" + config.Data.Web.ListeningAddr + " 上启动 Web 服务")
 		wg.Add(1)
 		go StartWeb()
 	} else {
-		fmt.Println("❎不启动 Web 服务")
+		fmt.Println("❎ 不启动 Web 服务")
 	}
 }
 

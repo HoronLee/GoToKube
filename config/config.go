@@ -1,48 +1,13 @@
 package config
 
 import (
-	"GoToKube/logger"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
 	"github.com/spf13/viper"
 )
-
-type WebConfig struct {
-	Enable        bool   `mapstructure:"Enable"`
-	ListeningAddr string `mapstructure:"ListeningAddr"`
-}
-
-type KubeConfig struct {
-	Enable     bool   `mapstructure:"Enable"`
-	ConfigPath string `mapstructure:"ConfigPath"`
-}
-
-type DatabaseConfig struct {
-	Type     string `mapstructure:"Type"`
-	Path     string `mapstructure:"Path"`
-	Addr     string `mapstructure:"Addr"`
-	User     string `mapstructure:"User"`
-	Password string `mapstructure:"Password"`
-	Name     string `mapstructure:"Name"`
-}
-
-type LogConfig struct {
-	Dir string `mapstructure:"Dir"`
-}
-
-type AuthConfig struct {
-	Pass string `mapstructure:"Pass"`
-}
-
-type Config struct {
-	Web      WebConfig      `mapstructure:"Web"`
-	Kube     KubeConfig     `mapstructure:"Kube"`
-	Database DatabaseConfig `mapstructure:"Database"`
-	Log      LogConfig      `mapstructure:"Log"`
-	Auth     AuthConfig     `mapstructure:"Auth"`
-}
 
 var (
 	Data Config
@@ -58,81 +23,63 @@ func InitConfig() {
 	setDefaults()
 
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		logger.GlobalLogger.Error("Configuration file does not exist, automatically create a default configuration file")
+		log.Printf("Configuration file does not exist, automatically create a default configuration file")
 		createDefaultConfig(configPath)
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
-		logger.GlobalLogger.Error("Error reading configuration file" + err.Error())
+		log.Printf("Error reading configuration file" + err.Error())
 	} else {
-		logger.GlobalLogger.Info("Read configuration file")
+		log.Printf("Read configuration file")
 	}
 
 	if err := viper.Unmarshal(&Data); err != nil {
-		logger.GlobalLogger.Error("Unable to decode into struct" + err.Error())
+		log.Printf("Unable to decode into struct" + err.Error())
 	}
 	fmt.Println(Data)
 }
 
 func setDefaults() {
-	viper.SetDefault("Web.Enable", false)
-	viper.SetDefault("Web.ListeningAddr", ":8080")
-	viper.SetDefault("Term.Enable", false)
-	viper.SetDefault("Kube.Enable", false)
-	viper.SetDefault("Kube.ConfigPath", "")
-	viper.SetDefault("Database.Type", "sqlite")
-	viper.SetDefault("Database.Path", "data.db")
-	viper.SetDefault("Database.Addr", "")
-	viper.SetDefault("Database.User", "")
-	viper.SetDefault("Database.Password", "")
-	viper.SetDefault("Database.Name", "")
-	viper.SetDefault("Log.Dir", "")
-	viper.SetDefault("Auth.Pass", "gotokube")
+	defaults := map[string]interface{}{
+		"Web.Enable":            false,
+		"Web.ListeningAddr":     ":8080",
+		"Kubernetes.Enable":     false,
+		"Kubernetes.ConfigPath": "",
+		"Database.Type":         "sqlite",
+		"Database.Path":         "data.db",
+		"Database.Addr":         "",
+		"Database.User":         "",
+		"Database.Password":     "",
+		"Database.Name":         "",
+		"Common.LogDir":         "",
+		"Common.TermEnable":     false,
+		"Auth.User":             "root",
+		"Auth.Pass":             "123456",
+	}
+	for key, value := range defaults {
+		viper.SetDefault(key, value)
+	}
 }
 
 func createDefaultConfig(path string) {
-	config := Config{
-		Web: WebConfig{
-			Enable:        viper.GetBool("Web.Enable"),
-			ListeningAddr: viper.GetString("Web.ListeningAddr"),
-		},
-		Kube: KubeConfig{
-			Enable:     viper.GetBool("Kube.Enable"),
-			ConfigPath: viper.GetString("Kube.ConfigPath"),
-		},
-		Database: DatabaseConfig{
-			Type:     viper.GetString("Database.Type"),
-			Path:     viper.GetString("Database.Path"),
-			Addr:     viper.GetString("Database.Addr"),
-			User:     viper.GetString("Database.User"),
-			Password: viper.GetString("Database.Password"),
-			Name:     viper.GetString("Database.Name"),
-		},
-		Log: LogConfig{
-			Dir: viper.GetString("Log.Dir"),
-		},
-		Auth: AuthConfig{
-			Pass: viper.GetString("Auth.Pass"),
-		},
-	}
+	viper.Set("Web.Enable", viper.GetBool("Web.Enable"))
+	viper.Set("Web.ListeningAddr", viper.GetString("Web.ListeningAddr"))
+	viper.Set("Kubernetes.Enable", viper.GetBool("Kubernetes.Enable"))
+	viper.Set("Kubernetes.ConfigPath", viper.GetString("Kubernetes.ConfigPath"))
+	viper.Set("Database.Type", viper.GetString("Database.Type"))
+	viper.Set("Database.Path", viper.GetString("Database.Path"))
+	viper.Set("Database.Addr", viper.GetString("Database.Addr"))
+	viper.Set("Database.User", viper.GetString("Database.User"))
+	viper.Set("Database.Password", viper.GetString("Database.Password"))
+	viper.Set("Database.Name", viper.GetString("Database.Name"))
+	viper.Set("Common.LogDir", viper.GetString("Common.LogDir"))
+	viper.Set("Common.TermEnable", viper.GetBool("Common.TermEnable"))
+	viper.Set("Auth.User", viper.GetString("Auth.User"))
+	viper.Set("Auth.Pass", viper.GetString("Auth.Pass"))
 
-	viper.Set("Web.Enable", config.Web.Enable)
-	viper.Set("Web.ListeningAddr", config.Web.ListeningAddr)
-	viper.Set("Kube.Enable", config.Kube.Enable)
-	viper.Set("Kube.ConfigPath", config.Kube.ConfigPath)
-	viper.Set("Database.Type", config.Database.Type)
-	viper.Set("Database.Path", config.Database.Path)
-	viper.Set("Database.Addr", config.Database.Addr)
-	viper.Set("Database.User", config.Database.User)
-	viper.Set("Database.Password", config.Database.Password)
-	viper.Set("Database.Name", config.Database.Name)
-	viper.Set("Log.Dir", config.Log.Dir)
-	viper.Set("Auth.Pass", config.Auth.Pass)
-
-	err := viper.WriteConfigAs(path)
-	if err != nil {
-		logger.GlobalLogger.Error("Error writing default configuration file" + err.Error())
+	if err := viper.WriteConfigAs(path); err != nil {
+		log.Println("Error writing default configuration file:", err)
 	} else {
-		logger.GlobalLogger.Info("Default configuration file created successfully")
+		log.Println("Default configuration file created successfully.")
 	}
 }

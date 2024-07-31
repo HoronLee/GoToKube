@@ -1,24 +1,34 @@
 package routes
 
 import (
+	"GoToKube/web/auth"
 	"GoToKube/web/controller"
 	"github.com/gin-gonic/gin"
 )
 
 func SetupRouter() *gin.Engine {
-	// 开发模式：DebugMode 线上模式：ReleaseMode
-	gin.SetMode(gin.ReleaseMode)
+	// 设置为测试模式或线上模式
+	gin.SetMode(gin.TestMode) // 根据环境改为 gin.ReleaseMode 或 gin.DebugMode
 	router := gin.Default()
-	// 路由设置
-	router.GET("/")
-	registerKubeRoutes(router)
-	registerDockerRoutes(router)
+
+	// 身份认证相关路由
+	router.POST("/register", controller.Register)
+	router.POST("/login", controller.Login)
+
+	// 使用 JWT 中间件保护需要身份认证的路由
+	kube := router.Group("/kube")
+	kube.Use(auth.JWTMiddleware())
+	registerKubeRoutes(kube)
+
+	docker := router.Group("/docker")
+	docker.Use(auth.JWTMiddleware())
+	registerDockerRoutes(docker)
+
 	return router
 }
 
-// registerKubeRoutes groups and registers Kube related routes.
-func registerKubeRoutes(router *gin.Engine) {
-	kube := router.Group("/kube")
+// registerKubeRoutes groups and registers Kubernetes related routes.
+func registerKubeRoutes(kube *gin.RouterGroup) {
 	kube.GET("/deployment/:namespace", controller.GetDeployments)
 	kube.GET("/deployment/:namespace/:name", controller.GetDeployment)
 	kube.DELETE("/deployment/:namespace/:name", controller.DeleteDeployment)
@@ -36,8 +46,7 @@ func registerKubeRoutes(router *gin.Engine) {
 }
 
 // registerDockerRoutes groups and registers Docker related routes.
-func registerDockerRoutes(router *gin.Engine) {
-	docker := router.Group("/docker")
+func registerDockerRoutes(docker *gin.RouterGroup) {
 	docker.GET("/image", controller.GetImages)
 	docker.POST("/uploadImage", controller.UploadImage)
 	docker.DELETE("/image/:id", controller.DeleteImage)
