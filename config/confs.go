@@ -4,7 +4,7 @@ type Config struct {
 	Web        `mapstructure:"Web"`
 	Kubernetes `mapstructure:"Kubernetes"`
 	Database   `mapstructure:"Database"`
-	Common     `mapstructure:"CommonConfig"`
+	Common     `mapstructure:"Common"`
 	Auth       `mapstructure:"Auth"`
 }
 
