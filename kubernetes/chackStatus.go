@@ -16,7 +16,7 @@ var (
 	dynamicClient dynamic.Interface
 )
 
-func CheckStatus() bool {
+func CheckStatus() error {
 	// 获取 kubernetes 配置文件
 	KubeConfig := config.Data.Kubernetes.ConfigPath
 	if KubeConfig == "" {
@@ -27,21 +27,21 @@ func CheckStatus() bool {
 	kubeConfig, err := clientcmd.BuildConfigFromFlags("", KubeConfig)
 	if err != nil {
 		logger.GlobalLogger.Error(err.Error())
-		return false
+		return err
 	}
 	// 创建 kubernetes 客户端
 	kubeClient, err = kubernetes.NewForConfig(kubeConfig)
 	dynamicClient, err = dynamic.NewForConfig(kubeConfig)
 	if err != nil {
 		logger.GlobalLogger.Error(err.Error())
-		return false
+		return err
 	} else {
 		err = GetK8sVersion()
 		if err != nil {
 			logger.GlobalLogger.Error(err.Error())
-			return false
+			return err
 		}
-		return true
+		return nil
 	}
 }
 

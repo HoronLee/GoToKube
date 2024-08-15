@@ -4,10 +4,13 @@ import (
 	"GoToKube/logger"
 	"context"
 	"fmt"
+	"strings"
+	"time"
+
+	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/go-connections/nat"
-	"time"
 )
 
 // CreateContainer 创建容器
@@ -101,4 +104,33 @@ func StartContainer(containerID string) (string, error) {
 		return containerID, err
 	}
 	return containerID, nil
+}
+
+// GetCtr 获取当前容器
+func GetCtr() ([]types.Container, error) {
+	containers, err := dockerClient.ContainerList(context.Background(), container.ListOptions{})
+	if err != nil {
+		logger.GlobalLogger.Error("Failed to get containers" + err.Error())
+	} else {
+		logger.GlobalLogger.Info("Success to get containers")
+	}
+	return containers, err
+}
+
+// GetCtrByImg 通过镜像名获得容器
+func GetCtrByImg(imgName string) ([]types.Container, error) {
+	containers, err := GetCtr()
+	if err != nil {
+		return nil, err
+	}
+	var output []types.Container
+	for _, ctr := range containers {
+		if strings.Contains(ctr.Image, imgName) {
+			output = append(output, ctr)
+		}
+	}
+	if len(output) == 0 {
+		return output, fmt.Errorf("no container matches this condition")
+	}
+	return output, nil
 }

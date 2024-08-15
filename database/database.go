@@ -3,6 +3,8 @@ package database
 import (
 	"GoToKube/config"
 	"GoToKube/logger"
+	"errors"
+
 	"gorm.io/gorm"
 )
 
@@ -24,7 +26,7 @@ func CheckAndSetDefaultConfig() {
 	}
 }
 
-func CheckStatus() bool {
+func CheckStatus() error {
 	CheckAndSetDefaultConfig()
 	switch config.Data.Database.Type {
 	case "":
@@ -32,19 +34,17 @@ func CheckStatus() bool {
 		fallthrough
 	case "sqlite":
 		if config.Data.Database.Path == "" {
-			logger.GlobalLogger.Error("SQLite database path is not set")
-			return false
+			return errors.New("SQLite database path is not set")
 		}
 	case "mysql":
 		if config.Data.Database.Addr == "" || config.Data.Database.User == "" || config.Data.Database.Password == "" || config.Data.Database.Name == "" {
 			logger.GlobalLogger.Error("Missing required MySQL configuration parameters")
-			return false
+			return errors.New("Missing required MySQL configuration parameters")
 		}
 	default:
-		logger.GlobalLogger.Error("Unsupported database type: " + config.Data.Database.Type)
-		return false
+		return errors.New("Unsupported database type: " + config.Data.Database.Type)
 	}
-	return true
+	return nil
 }
 
 func GetDBConnection() (db *gorm.DB, err error) {
@@ -61,7 +61,7 @@ func GetDBConnection() (db *gorm.DB, err error) {
 	db, err = dbHandler.Open()
 	if err != nil {
 		logger.GlobalLogger.Error("Unable to Connect to database")
-		panic(err)
+		return nil, err
 	}
 	return db, err
 }

@@ -11,9 +11,10 @@ import (
 	"GoToKube/web/auth"
 	"GoToKube/web/models"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"log"
 	"sync"
+
+	"github.com/sirupsen/logrus"
 )
 
 var mainWg sync.WaitGroup
@@ -40,7 +41,7 @@ func main() {
 	}
 
 	// 初始化根用户
-	if err := auth.InitRootUser(); err != nil {
+	if err := auth.InitRootUser(); err == nil {
 		log.Fatalf("failed to initialize root user: %v", err)
 	}
 
@@ -56,30 +57,29 @@ func main() {
 
 func checkStatus() {
 	// 检查组件状态
-	if database.CheckStatus() {
-		db, err := database.GetDBConnection()
-		err = db.AutoMigrate(&models.User{})
-		if err := auth.InitRootUser(); err != nil {
-			log.Fatalf("failed to initialize root user: %v", err)
-		}
+	if err := database.CheckStatus(); err == nil {
+		_, err := database.GetDBConnection()
 		if err != nil {
 			logger.GlobalLogger.Error("Database connection failed")
 			panic(err)
 		} else if !config.Data.Kubernetes.Enable {
 			fmt.Println("⚓️不启用 kubernetes 控制器")
-			if !docker.CheckStatus() {
+			if err := docker.CheckStatus(); err != nil {
 				panic("Docker is not healthy,please start docker")
 			}
 		} else {
 			fmt.Println("⚓️已启用 kubernetes 控制器")
-			if kubernetes.CheckStatus() && docker.CheckStatus() {
+			if err := docker.CheckStatus(); err != nil {
+				panic("Docker is not healthy")
+			}
+			if err := kubernetes.CheckStatus(); err != nil {
 				logger.GlobalLogger.Info("All components are running")
 			} else {
-				panic("Kubernetes or Docker is not healthy")
+				panic("Kubernetes is not healthy")
 			}
 		}
 	} else {
-		logger.GlobalLogger.Error("Database is not healthy, please check the relevant configuration of the database")
-		panic("Database is not healthy")
+		logger.GlobalLogger.Error(err.Error())
+		panic(err.Error())
 	}
 }

@@ -4,71 +4,11 @@ import (
 	"GoToKube/logger"
 	"context"
 	"fmt"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/image"
-	"github.com/docker/docker/client"
 	"io"
 	"os"
-	"strings"
+
+	"github.com/docker/docker/api/types/image"
 )
-
-var (
-	dockerClient *client.Client
-)
-
-func initDocker() {
-	var err error
-	dockerClient, err = newClient()
-	if err != nil {
-		logger.GlobalLogger.Error("Docker Client creation failed" + err.Error())
-	} else {
-		logger.GlobalLogger.Info("Docker Client was successfully created")
-	}
-}
-
-// NewClient 创建一个包含 Docker 客户端的新实例
-func newClient() (*client.Client, error) {
-	cli, err := client.NewClientWithOpts(client.FromEnv)
-	if err != nil {
-		return nil, err
-	}
-	return cli, nil
-}
-
-// Close 关闭 Docker 客户端连接
-func Close() error {
-	return dockerClient.Close()
-}
-
-// GetCtr 获取当前容器
-func GetCtr() ([]types.Container, error) {
-	containers, err := dockerClient.ContainerList(context.Background(), container.ListOptions{})
-	if err != nil {
-		logger.GlobalLogger.Error("Failed to get containers" + err.Error())
-	} else {
-		logger.GlobalLogger.Info("Success to get containers")
-	}
-	return containers, err
-}
-
-// GetCtrByImg 通过镜像名获得容器
-func GetCtrByImg(imgName string) ([]types.Container, error) {
-	containers, err := GetCtr()
-	if err != nil {
-		return nil, err
-	}
-	var output []types.Container
-	for _, ctr := range containers {
-		if strings.Contains(ctr.Image, imgName) {
-			output = append(output, ctr)
-		}
-	}
-	if len(output) == 0 {
-		return output, fmt.Errorf("no container matches this condition")
-	}
-	return output, nil
-}
 
 // GetImages 获取当前的 Docker 镜像列表
 func GetImages() ([]image.Summary, error) {

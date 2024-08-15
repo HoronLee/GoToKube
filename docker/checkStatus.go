@@ -11,20 +11,20 @@ import (
 	"github.com/docker/docker/client"
 )
 
-func CheckStatus() bool {
+func CheckStatus() error {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
 		logger.GlobalLogger.Error(err.Error())
-		return false
+		return err
 	}
 	ifok, status := dockerChecks(cli)
 	if !ifok {
 		fmt.Println(status)
-		return false
+		return err
 	}
 	cli.Close()
 	initDocker()
-	return true
+	return nil
 }
 
 func dockerChecks(cli *client.Client) (ifok bool, status string) {
