@@ -41,7 +41,7 @@ func main() {
 	}
 
 	// 初始化根用户
-	if err := auth.InitRootUser(); err == nil {
+	if err := auth.InitRootUser(); err != nil {
 		log.Fatalf("failed to initialize root user: %v", err)
 	}
 
@@ -56,30 +56,30 @@ func main() {
 }
 
 func checkStatus() {
-	// 检查组件状态
-	if err := database.CheckStatus(); err == nil {
-		_, err := database.GetDBConnection()
-		if err != nil {
-			logger.GlobalLogger.Error("Database connection failed")
-			panic(err)
-		} else if !config.Data.Kubernetes.Enable {
-			fmt.Println("⚓️不启用 kubernetes 控制器")
-			if err := docker.CheckStatus(); err != nil {
-				panic("Docker is not healthy,please start docker")
-			}
-		} else {
-			fmt.Println("⚓️已启用 kubernetes 控制器")
-			if err := docker.CheckStatus(); err != nil {
-				panic("Docker is not healthy")
-			}
-			if err := kubernetes.CheckStatus(); err != nil {
-				logger.GlobalLogger.Info("All components are running")
-			} else {
-				panic("Kubernetes is not healthy")
-			}
-		}
-	} else {
+	// 检查数据库状态
+	if err := database.CheckStatus(); err != nil {
 		logger.GlobalLogger.Error(err.Error())
 		panic(err.Error())
 	}
+	// 获取数据库连接
+	if _, err := database.GetDBConnection(); err != nil {
+		logger.GlobalLogger.Error("Database connection failed")
+		panic(err)
+	}
+	switch config.Data.Kubernetes.Enable {
+	case false:
+		fmt.Println("⚓️不启用 kubernetes 控制器")
+		if err := docker.CheckStatus(); err != nil {
+			panic("Docker is not healthy: " + err.Error())
+		}
+	case true:
+		fmt.Println("⚓️已启用 kubernetes 控制器")
+		if err := docker.CheckStatus(); err != nil {
+			panic("Docker is not healthy: " + err.Error())
+		}
+		if err := kubernetes.CheckStatus(); err != nil {
+			panic("Kubernetes is not healthy: " + err.Error())
+		}
+	}
+	logger.GlobalLogger.Info("All components are running")
 }
