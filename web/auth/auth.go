@@ -3,17 +3,28 @@ package auth
 import (
 	"GoToKube/config"
 	"GoToKube/database"
+	"GoToKube/logger"
 	"GoToKube/web/models"
+	"errors"
+
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
 func InitRootUser() error {
-	db, err := database.GetDBConnection()
+	db, _ := database.GetDBConnection()
+
+	// 自动迁移模型
+	err := db.AutoMigrate(&models.User{})
 	if err != nil {
 		return err
 	}
 
+	if config.Data.Auth.Pass == "" {
+		err := errors.New("Root password is not set in environment variables")
+		logger.GlobalLogger.Error(err.Error())
+		return err
+	}
 	var user models.User
 	if err := db.Where("username = ?", config.Data.Auth.User).First(&user).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {

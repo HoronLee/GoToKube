@@ -9,7 +9,6 @@ import (
 	"GoToKube/terminal"
 	"GoToKube/web"
 	"GoToKube/web/auth"
-	"GoToKube/web/models"
 	"fmt"
 	"log"
 	"sync"
@@ -28,17 +27,6 @@ func main() {
 
 	// 检查组件状态
 	checkStatus()
-
-	db, err := database.GetDBConnection()
-	if err != nil {
-		log.Fatalf("failed to connect to the database: %v", err)
-	}
-
-	// 自动迁移模型
-	err = db.AutoMigrate(&models.User{})
-	if err != nil {
-		return
-	}
 
 	// 初始化根用户
 	if err := auth.InitRootUser(); err != nil {

@@ -33,7 +33,7 @@ func (m *MySQLDB) Open() (*gorm.DB, error) {
 		return nil, err
 	}
 	return db, err
-}
+}	
 
 // Close 关闭MySQL数据库连接
 func (m *MySQLDB) Close() error {

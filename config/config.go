@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -36,25 +35,17 @@ func InitConfig() {
 	if err := viper.Unmarshal(&Data); err != nil {
 		log.Printf("Unable to decode into struct" + err.Error())
 	}
-	fmt.Println(Data)
 }
 
 func setDefaults() {
 	defaults := map[string]interface{}{
-		"Web.Enable":            false,
-		"Web.ListeningAddr":     ":8080",
-		"Kubernetes.Enable":     false,
-		"Kubernetes.ConfigPath": "",
-		"Database.Type":         "sqlite",
-		"Database.Path":         "data.db",
-		"Database.Addr":         "",
-		"Database.User":         "",
-		"Database.Password":     "",
-		"Database.Name":         "",
-		"Common.LogDir":         "",
-		"Common.TermEnable":     false,
-		"Auth.User":             "root",
-		"Auth.Pass":             "123456",
+		"Web.Enable":        true,
+		"Web.ListeningAddr": ":8080",
+		"Kubernetes.Enable": false,
+		"Database.Type":     "sqlite",
+		"Database.Path":     "data.db",
+		"Common.TermEnable": false,
+		"Auth.User":         "root",
 	}
 	for key, value := range defaults {
 		viper.SetDefault(key, value)

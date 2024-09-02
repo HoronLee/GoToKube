@@ -6,6 +6,7 @@ services:
       - WEB_ENABLE=true
       - WEB_LISTENINGADDR=:80
       - JWT_SECRET_KEY=JWT_TOKEN
+      - AUTH_PASS=123456
       - KUBERNETES_ENABLE=false
       - KUBERNETES_CONFIGPATH=/root/.kube/config
     volumes:
