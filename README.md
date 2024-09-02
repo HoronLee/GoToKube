@@ -23,7 +23,7 @@
 ## 用法
 
 ⚠️：需要 Docker Client API Version >= 1.45
-环境变量`JWT_SECRET_KEY=JWT_TOKEN`必须设置，否则 Web 服务无法正常使用
+环境变量JWT密钥`JWT_SECRET_KEY=JWT_TOKEN`和根用户密码`AUTH_PASS`必须设置，否则 Web 服务无法正常使用
 本软件大多功能由 API 提供，最好的方式是前往查看 API 文档：https://documenter.getpostman.com/view/34220703/2sA3e5d86S
 
 ## 构建方法
