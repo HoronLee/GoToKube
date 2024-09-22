@@ -1,14 +1,13 @@
 package auth
 
 import (
+	"GoToKube/config"
 	"GoToKube/logger"
 	"errors"
-	"github.com/golang-jwt/jwt/v5"
-	"os"
 	"time"
-)
 
-var jwtKey = []byte(os.Getenv("JWT_SECRET_KEY"))
+	"github.com/golang-jwt/jwt/v5"
+)
 
 type Claims struct {
 	UserID uint
@@ -16,11 +15,13 @@ type Claims struct {
 }
 
 func GenerateJWT(userID uint) (string, error) {
+	jwtKey := []byte(config.Data.Auth.JwtSecret)
 	if len(jwtKey) == 0 {
 		err := errors.New("JWT secret key is not set in environment variables")
 		logger.GlobalLogger.Error(err.Error())
 		return "", err
 	}
+
 	expirationTime := time.Now().Add(24 * time.Hour)
 	claims := &Claims{
 		UserID: userID,
@@ -28,11 +29,14 @@ func GenerateJWT(userID uint) (string, error) {
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},
 	}
+
+	// 使用 HS512 签名方法创建 JWT
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
 	return token.SignedString(jwtKey)
 }
 
 func ParseJWT(tokenString string) (*Claims, error) {
+	jwtKey := []byte(config.Data.Auth.JwtSecret)
 	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {

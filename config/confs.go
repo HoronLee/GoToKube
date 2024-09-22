@@ -33,6 +33,7 @@ type Common struct {
 }
 
 type Auth struct {
-	User string `mapstructure:"User"`
-	Pass string `mapstructure:"Pass"`
+	User      string `mapstructure:"User"`
+	Pass      string `mapstructure:"Pass"`
+	JwtSecret string `mapstructure:"JwtSecret"`
 }

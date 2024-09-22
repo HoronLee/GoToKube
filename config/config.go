@@ -67,6 +67,7 @@ func createDefaultConfig(path string) {
 	viper.Set("Common.TermEnable", viper.GetBool("Common.TermEnable"))
 	viper.Set("Auth.User", viper.GetString("Auth.User"))
 	viper.Set("Auth.Pass", viper.GetString("Auth.Pass"))
+	viper.Set("Auth.JwtSecret", viper.GetString("Auth.JwtSecret"))
 
 	if err := viper.WriteConfigAs(path); err != nil {
 		log.Println("Error writing default configuration file:", err)
