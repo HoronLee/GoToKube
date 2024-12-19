@@ -1,0 +1,28 @@
+# 管理员用户配置
+[auth]
+pass = '123456'
+user = 'root'
+
+# 软件系统配置
+[common]
+logdir = ''
+termenable = false
+
+# 数据库配置
+[database]
+addr = ''
+name = ''
+password = ''
+path = 'data.db'
+type = 'sqlite'
+user = ''
+
+# kubernetes 配置
+[kubernetes]
+configpath = ''
+enable = true
+
+# web 配置
+[web]
+enable = true
+listeningaddr = ':8080'
