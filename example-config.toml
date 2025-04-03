@@ -2,6 +2,7 @@
 [auth]
 pass = '123456'
 user = 'root'
+JwtSecret = 'JwtSecret114514'
 
 # 软件系统配置
 [common]
